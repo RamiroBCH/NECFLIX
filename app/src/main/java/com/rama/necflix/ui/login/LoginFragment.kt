@@ -20,7 +20,7 @@ class LoginFragment : Fragment(), AccountsImagesAdapter.OnPhotoClickListener {
     private var _binding: LoginFragmentBinding? = null
     private val binding get() = _binding!!
     lateinit var passwordDB: String
-    lateinit var chooseAccount: Accounts
+    private var chooseAccount: Accounts? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -78,7 +78,7 @@ class LoginFragment : Fragment(), AccountsImagesAdapter.OnPhotoClickListener {
     private fun initSession(password: String){
         //para comprobar el password ingresado con el obtenido de la database
         if(password == passwordDB){
-            val primaryKey = chooseAccount.primaryKey
+            val primaryKey = chooseAccount?.username
             findNavController().navigate(R.id.action_loginFragment_to_homeFragment, bundleOf("primaryKey" to primaryKey))
         }else{
             Toast.makeText(context,"Contraseña incorrecta",Toast.LENGTH_LONG).show()
@@ -93,17 +93,19 @@ class LoginFragment : Fragment(), AccountsImagesAdapter.OnPhotoClickListener {
                 DividerItemDecoration.VERTICAL)
         )
     }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
     override fun onPhotoClick(account: Accounts) {
         passwordDB = account.password
         chooseAccount = account
-        binding.btnInitSession.isClickable
+        binding.btnInitSession.isClickable = true
     }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        chooseAccount = null
+        binding.btnInitSession.isClickable = false
+        _binding = null
+    }
+
+
 
 }
 

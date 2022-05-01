@@ -1,10 +1,14 @@
 package com.rama.necflix.ui.login
 
+import android.graphics.drawable.Drawable
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
-import kotlinx.coroutines.Dispatchers
+import androidx.lifecycle.viewModelScope
+import com.rama.necflix.data.Accounts
+import com.rama.necflix.data.DrawableResourceName
+import com.rama.necflix.domain.Repo
+import kotlinx.coroutines.launch
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel(private val repo: Repo) : ViewModel() {
     fun getAccountsFromDatabase() {
         //crear una funcion que llame al repo
     }
@@ -16,5 +20,16 @@ class LoginViewModel : ViewModel() {
             emit(Resource.Failure(e))
         }
     }*/
+    fun insertDrawableName(list: List<DrawableResourceName>){
+        viewModelScope.launch {
+            repo.insertDrawableName(list)
+        }
+    }
+
+    fun insertAccountToRoom(account: Accounts) {
+        viewModelScope.launch {
+            repo.insertAccountToRoom(account)
+        }
+    }
 
 }

@@ -7,21 +7,22 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "ACCOUNTS")
 data class Accounts(
-    @PrimaryKey(autoGenerate = true)
-    val primaryKey: String,
+    @PrimaryKey
     @ColumnInfo
     val username:String,
     @ColumnInfo
     val password:String,
     @ColumnInfo
-    val sessionId:String,
+    val requestToken:String,
+    @ColumnInfo
+    val sessionId:String?,
     @ColumnInfo
     val imgSrc:Drawable
 )
-@Entity(tableName = "IMGS")
-data class Drawables(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int,
+
+@Entity(tableName = "draws")
+data class DrawableResourceName(
+    @PrimaryKey
     @ColumnInfo
-    val imgSrc: Drawable
+    val name: String = ""
 )
