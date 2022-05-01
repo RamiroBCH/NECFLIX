@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.rama.necflix.databinding.CreateAccountFragmentBinding
 
-
 class CreateAccountFragment : Fragment() {
     private val viewModel: LoginViewModel by viewModels<LoginViewModel>()
     private var _binding: CreateAccountFragmentBinding? = null

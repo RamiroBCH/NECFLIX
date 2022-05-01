@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.loginFragment, R.id.discoverFragment, R.id.detailsFragment
+                R.id.loginFragment, R.id.discoverFragment
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
-            R.id.action_settings -> true
+            R.id.about -> true
             else -> super.onOptionsItemSelected(item)
         }
     }

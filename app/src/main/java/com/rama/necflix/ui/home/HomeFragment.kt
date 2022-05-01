@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -31,9 +32,8 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.button.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_detailsFragment)
-        }
+        val primaryKey:Int? = arguments?.getInt("primaryKey")
+        Toast.makeText(context,primaryKey.toString(),Toast.LENGTH_LONG).show()
     }
     override fun onDestroyView() {
         super.onDestroyView()

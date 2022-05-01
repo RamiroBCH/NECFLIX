@@ -12,10 +12,10 @@
 
     <ImageView
         android:id="@+id/logo_necflix"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:src="@drawable/ic_launcher_background" />
+        android:src="@drawable/ic_necflix" />
 
     <TextView
         android:id="@+id/subscribe"
@@ -27,6 +27,7 @@
         android:text="@string/esta_suscrito_en_necflix" />
 
     <LinearLayout
+        android:id="@+id/yesNo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -59,7 +60,6 @@
             android:text="@string/no_suscribirme" />
     </LinearLayout>
 
-
     <TextView
         android:id="@+id/invitado"
         android:clickable="true"
@@ -71,6 +71,46 @@
         android:textAlignment="center"
         android:textColor="@color/backgroudFriendlyText"
         android:text="@string/entrar_como_invitado" />
+    <LinearLayout
+        android:id="@+id/accounts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="4dp">
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/accountsImages"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:layout_marginBottom="16dp"/>
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/password"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:startIconDrawable="@drawable/ic_baseline_lock_24"
+            app:endIconMode="password_toggle">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/passwordTiped"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/btn_init_session"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/backgroudFriendlyBoton"
+            android:textColor="@color/backgroudFriendlyText"
+            android:clickable="false"
+            android:text="@string/iniciar_sesion"/>
+    </LinearLayout>
 </LinearLayout>

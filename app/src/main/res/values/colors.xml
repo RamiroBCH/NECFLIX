@@ -7,7 +7,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="backgroudFriendly">#0021D5</color>
+    <color name="backgroudFriendlyText">#FFFFFF</color>
     <color name="backgroudFriendlyBoton">#00137E</color>
-    <color name="backgroudFriendlyText">#FF9800</color>
+    <color name="backgroudFriendly">#0000FF</color>
 </resources>
