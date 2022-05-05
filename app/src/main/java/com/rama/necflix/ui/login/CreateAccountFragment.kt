@@ -1,6 +1,5 @@
 package com.rama.necflix.ui.login
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,22 +7,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.core.view.get
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
-import com.rama.necflix.data.DrawableResourceName
-import com.rama.necflix.databinding.AccountImagesRowBinding
 import com.rama.necflix.databinding.CreateAccountFragmentBinding
-import com.rama.necflix.LIST_OF_NAME_RESOURCE_NAME
+import com.rama.necflix.LIST_OF_NAME_RESOURCE_URL
 import com.rama.necflix.R
 import com.rama.necflix.data.Accounts
+import dagger.hilt.android.AndroidEntryPoint
 
-class CreateAccountFragment : Fragment(), CreateAccountAdapter.OnResourceClickListener {
+@AndroidEntryPoint
+class CreateAccountFragment : Fragment(), CreateAccountAdapter.OnDrawableClickListener {
     private val viewModel: LoginViewModel by viewModels<LoginViewModel>()
     private var _binding: CreateAccountFragmentBinding? = null
     private val binding get() = _binding!!
-    lateinit var image: Drawable
+    lateinit var image: String
     lateinit var account: Accounts
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,18 +41,17 @@ class CreateAccountFragment : Fragment(), CreateAccountAdapter.OnResourceClickLi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.insertDrawableName(LIST_OF_NAME_RESOURCE_NAME)
-        //todo lo del recyclerview
+        viewModel.insertDrawableName(LIST_OF_NAME_RESOURCE_URL)
+        val data = LIST_OF_NAME_RESOURCE_URL
+        //lo del recyclerview
         setupRecyclerView()
-        //todo lo de crear cuenta
+        binding.userImages.adapter = CreateAccountAdapter(requireContext(),data,this)
+        //lo de crear cuenta
         binding.btnCreateAccount.setOnClickListener {
-            if (binding.username.text != null) {
+            if (binding.username.text != null ) {
                 createAccount()
                 val primaryKey = account.username
-                findNavController().navigate(
-                    R.id.action_createAccountFragment_to_homeFragment,
-                    bundleOf("primaryKey" to primaryKey)
-                )
+                findNavController().navigate(CreateAccountFragmentDirections.actionCreateAccountFragmentToHomeFragment(primaryKey))
             } else {
                 Toast.makeText(
                     context, "Ingrese nombre de usuario y contraseña", Toast.LENGTH_LONG
@@ -71,8 +70,8 @@ class CreateAccountFragment : Fragment(), CreateAccountAdapter.OnResourceClickLi
             binding.username.text.toString(),
             binding.password.text.toString(),
             requestToken,
-            null,
-            image.current
+            "admin",
+            image
         )
         //obtenemos un requestToken autorizado
         //crear una session id y actualizar en room
@@ -82,14 +81,14 @@ class CreateAccountFragment : Fragment(), CreateAccountAdapter.OnResourceClickLi
             binding.password.text.toString(),
             requestToken,
             sessionId,
-            image.current
+            image
         )
         //ponemos en room
         viewModel.insertAccountToRoom(account)
     }
 
 
-    private fun setupRecyclerView() {
+    private fun setupRecyclerView(){
         binding.userImages.layoutManager =
             GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false)
         binding.userImages.addItemDecoration(
@@ -101,7 +100,14 @@ class CreateAccountFragment : Fragment(), CreateAccountAdapter.OnResourceClickLi
 
     }
 
-    override fun onDrawableClick(imgSrc: Drawable) {
+    override fun onDrawableClick(imgSrc: String,position: Int) {
+        binding.userImages[position].elevation = 1.25F
+        binding.btnCreateAccount.visibility = View.VISIBLE
         image = imgSrc
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding.btnCreateAccount.visibility = View.GONE
     }
 }

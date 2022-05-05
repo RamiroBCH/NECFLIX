@@ -1,12 +1,13 @@
 package com.rama.necflix.data
 
-import android.graphics.drawable.Drawable
 import com.rama.necflix.domain.Datasource
+import com.rama.necflix.vo.Resource
+import javax.inject.Inject
 
-class DatasourceImpl(val itemsDao: ItemsDao): Datasource {
-    override suspend fun insertDrawableName(list: List<DrawableResourceName>) {
+class DatasourceImpl @Inject constructor(val itemsDao: ItemsDao): Datasource {
+    override suspend fun insertDrawableName(list: List<DrawableResourceUrl>) {
         var count = 0
-        for(i in list){
+        for(i in 0 .. 7){
             itemsDao.insertDrawableName(list[count])
             count++
         }
@@ -15,6 +16,14 @@ class DatasourceImpl(val itemsDao: ItemsDao): Datasource {
 
     override suspend fun insertAccountToRoom(account: Accounts) {
         itemsDao.insertAccount(account)
+    }
+
+    override suspend fun getDrawableSrc(): List<DrawableResourceUrl> {
+        return itemsDao.getDrawableSrc()
+    }
+
+    override suspend fun getAccountsFromDatabase(): Resource<List<Accounts>> {
+        return Resource.Success(itemsDao.getAccountsFromDatabase())
     }
 
 }

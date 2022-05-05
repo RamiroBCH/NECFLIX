@@ -14,11 +14,16 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.rama.necflix.R
 import com.rama.necflix.data.Accounts
 import com.rama.necflix.databinding.LoginFragmentBinding
+import com.rama.necflix.vo.Resource
+import dagger.hilt.android.AndroidEntryPoint
+import java.util.*
 
+@AndroidEntryPoint
 class LoginFragment : Fragment(), AccountsImagesAdapter.OnPhotoClickListener {
     private val viewModel: LoginViewModel by viewModels<LoginViewModel>()
     private var _binding: LoginFragmentBinding? = null
     private val binding get() = _binding!!
+    lateinit var accounts: List<Accounts>
     lateinit var passwordDB: String
     private var chooseAccount: Accounts? = null
     override fun onCreateView(
@@ -32,9 +37,7 @@ class LoginFragment : Fragment(), AccountsImagesAdapter.OnPhotoClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val accounts: List<Accounts> = listOf(
-        )
-        //getListAccounts()
+        getListAccounts()
         //aqui van las cositas del inicio de sesion
         binding.yes.setOnClickListener {
             if(accounts == emptyList<Accounts>()){
@@ -63,7 +66,20 @@ class LoginFragment : Fragment(), AccountsImagesAdapter.OnPhotoClickListener {
     }
 
     private fun getListAccounts() {
-        //viewModel.getAccountsFromDatabase()
+        viewModel.accounts.observe(viewLifecycleOwner, androidx.lifecycle.Observer { result ->
+            when(result){
+                is Resource.Loading -> {
+                    Toast.makeText(requireContext(),"Obteniendo datos", Toast.LENGTH_SHORT).show()
+                }
+                is Resource.Success -> {
+                    accounts = result.data
+                    Toast.makeText(requireContext(),"Datos obtenisod", Toast.LENGTH_SHORT).show()
+                }
+                is Resource.Failure -> {
+                    Toast.makeText(requireContext(), "Error ${result.exception}", Toast.LENGTH_SHORT ).show()
+                }
+            }
+        })
     }
 
     private fun goneOrVisible(){
@@ -73,13 +89,14 @@ class LoginFragment : Fragment(), AccountsImagesAdapter.OnPhotoClickListener {
         //obtener usuarios de la lista accounts
         //configurar el recyclerview
         setupRV()
+        binding.accountsImages.adapter = AccountsImagesAdapter(requireContext(),accounts,this)
         binding.accounts.visibility = View.VISIBLE
     }
     private fun initSession(password: String){
         //para comprobar el password ingresado con el obtenido de la database
         if(password == passwordDB){
             val primaryKey = chooseAccount?.username
-            findNavController().navigate(R.id.action_loginFragment_to_homeFragment, bundleOf("primaryKey" to primaryKey))
+            findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToHomeFragment(primaryKey!!))
         }else{
             Toast.makeText(context,"Contraseña incorrecta",Toast.LENGTH_LONG).show()
         }

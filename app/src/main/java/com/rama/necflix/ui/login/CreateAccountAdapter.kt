@@ -1,22 +1,21 @@
 package com.rama.necflix.ui.login
 
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.rama.necflix.bindingDrawableToImgSrc
-import com.rama.necflix.data.DrawableResourceName
+import com.bumptech.glide.Glide
+import com.rama.necflix.data.DrawableResourceUrl
 import com.rama.necflix.databinding.AccountImagesRowBinding
 import com.rama.necflix.ui.BaseViewHolder
 
 class CreateAccountAdapter(
     private val context: Context,
-    private val accountImgs: List<DrawableResourceName>,
-    private val itemClickListener: OnResourceClickListener
+    private val accountImgs: List<DrawableResourceUrl>,
+    private val itemClickListener: OnDrawableClickListener
 ): RecyclerView.Adapter<BaseViewHolder<*>>() {
-    interface OnResourceClickListener{
-        fun onDrawableClick(imgSrc: Drawable)
+    interface OnDrawableClickListener{
+        fun onDrawableClick(imgSrc: String,position: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
@@ -35,11 +34,14 @@ class CreateAccountAdapter(
         return accountImgs.size
     }
 
-    inner class MainViewHolder(val binding: AccountImagesRowBinding) : BaseViewHolder<DrawableResourceName>(binding.root) {
-        override fun bind(item: DrawableResourceName, position: Int) = with(binding) {
-            binding.username.text = item.name
-            bindingDrawableToImgSrc(item,binding)
-            itemView.setOnClickListener{ itemClickListener.onDrawableClick(binding.image.drawable)}
+    inner class MainViewHolder(val binding: AccountImagesRowBinding) : BaseViewHolder<DrawableResourceUrl>(binding.root) {
+        override fun bind(item: DrawableResourceUrl, position: Int) = with(binding) {
+            Glide.with(context)
+                .load(item.url)
+                .centerCrop()
+                .into(image)
+            itemView.setOnClickListener{ itemClickListener.onDrawableClick(item.url,position)}
         }
     }
 }
+

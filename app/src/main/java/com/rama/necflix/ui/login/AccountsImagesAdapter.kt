@@ -4,6 +4,8 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.rama.necflix.R
 import com.rama.necflix.data.Accounts
 import com.rama.necflix.databinding.AccountImagesRowBinding
 import com.rama.necflix.ui.BaseViewHolder
@@ -36,7 +38,7 @@ class AccountsImagesAdapter(
     inner class ImgAccontViewHolder(val binding: AccountImagesRowBinding): BaseViewHolder<Accounts>(binding.root) {
         override fun bind(item: Accounts, position: Int) = with(binding) {
             username.text = item.username
-            image.setImageDrawable(item.imgSrc)
+            Glide.with(context).load(item.imgSrc).circleCrop().into(image)
             itemView.setOnClickListener{ itemClickListener.onPhotoClick(item)}
         }
     }

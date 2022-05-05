@@ -1,11 +1,13 @@
 package com.rama.necflix.domain
 
-import android.graphics.drawable.Drawable
 import com.rama.necflix.data.Accounts
-import com.rama.necflix.data.DrawableResourceName
+import com.rama.necflix.data.DrawableResourceUrl
+import com.rama.necflix.vo.Resource
 
 
 interface Repo {
-    suspend fun insertDrawableName(list: List<DrawableResourceName>)
+    suspend fun insertDrawableName(list: List<DrawableResourceUrl>)
     suspend fun insertAccountToRoom(account: Accounts)
+    suspend fun getDrawableSrc(): List<DrawableResourceUrl>
+    suspend fun getAccountsFromDatabase(): Resource<List<Accounts>>
 }

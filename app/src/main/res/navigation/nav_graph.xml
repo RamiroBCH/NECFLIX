@@ -24,7 +24,7 @@
             app:destination="@id/configurationsFragment" />
         <argument
             android:name="primaryKey"
-            app:argType="integer" />
+            app:argType="string" />
     </fragment>
 
     <fragment
@@ -81,7 +81,7 @@
     <fragment
         android:id="@+id/createAccountFragment"
         android:name="com.rama.necflix.ui.login.CreateAccountFragment"
-        android:label="CreateAccountFragment"
+        android:label="@string/crear_cuenta"
         tools:layout="@layout/create_account_fragment">
         <action
             android:id="@+id/action_createAccountFragment_to_homeFragment"
