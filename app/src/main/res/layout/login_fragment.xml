@@ -110,7 +110,7 @@
             android:layout_marginBottom="16dp"
             android:backgroundTint="@color/backgroudFriendlyBoton"
             android:textColor="@color/backgroudFriendlyText"
-            android:clickable="false"
+            android:visibility="gone"
             android:text="@string/iniciar_sesion"/>
     </LinearLayout>
 </LinearLayout>

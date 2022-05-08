@@ -12,6 +12,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.rama.necflix.databinding.ActivityMainBinding
@@ -39,8 +40,8 @@ class MainActivity : AppCompatActivity() {
         navController = navHostFragment.findNavController()
 
         //val navController = findNavController(R.id.nav_host_fragment_content_main)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+        //Passing each menu ID as a set of Ids because each
+        //menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.loginFragment, R.id.discoverFragment
@@ -48,7 +49,11 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
     }
+
+
+
     override fun onSupportNavigateUp(): Boolean {
         //val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()

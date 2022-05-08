@@ -12,5 +12,13 @@
             android:id="@+id/discoverFragment"
             android:icon="@drawable/ic_menu_gallery"
             android:title="@string/discover_fragment" />
+        <item
+            android:id="@+id/seriesFav"
+            android:icon="@drawable/ic_baseline_favorite_border_24"
+            android:title="Series Favoritas"/>
+        <item
+            android:id="@+id/moviesFav"
+            android:icon="@drawable/ic_baseline_favorite_24"
+            android:title="Pelis Favoritas"/>
     </group>
 </menu>

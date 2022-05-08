@@ -7,11 +7,24 @@
     android:orientation="vertical"
     android:padding="4dp"
     android:gravity="center">
-    <ImageView
-        android:id="@+id/image"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        tools:src="@mipmap/ic_launcher"/>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            tools:src="@mipmap/ic_launcher"/>
+        <ImageView
+            android:id="@+id/selected"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:visibility="gone"
+            android:src="@mipmap/ic_launcher"/>
+
+    </RelativeLayout>
+
     <TextView
         android:id="@+id/username"
         android:layout_width="match_parent"

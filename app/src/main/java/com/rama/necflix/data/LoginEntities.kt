@@ -1,11 +1,8 @@
 package com.rama.necflix.data
 
-import android.graphics.drawable.Drawable
-import androidx.core.graphics.drawable.toDrawable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.rama.necflix.R
 
 @Entity(tableName = "ACCOUNTS")
 data class Accounts(
@@ -22,11 +19,19 @@ data class Accounts(
     val imgSrc: String
 )
 
-@Entity(tableName = "draws")
-data class DrawableResourceUrl(
+@Entity(tableName = "INVITADO")
+data class AccountInvitado(
+    @PrimaryKey
+    val id: Int,
+    @ColumnInfo
+    val token: String
+)
+
+@Entity(tableName = "GENRES")
+data class GenresDB(
     @PrimaryKey
     @ColumnInfo
-    val name: String = "",
+    val id: Int,
     @ColumnInfo
-    val url: String = ""
+    val name:String
 )

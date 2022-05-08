@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.rama.necflix.data.Accounts
-import com.rama.necflix.data.DrawableResourceUrl
+import com.rama.necflix.data.Token
 import com.rama.necflix.domain.Repo
 import com.rama.necflix.vo.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,11 +31,6 @@ class LoginViewModel @Inject constructor(private val repo: Repo) : ViewModel() {
             emit(Resource.Failure(e))
         }
     }*/
-    fun insertDrawableName(list: List<DrawableResourceUrl>){
-        viewModelScope.launch {
-            repo.insertDrawableName(list)
-        }
-    }
 
     fun insertAccountToRoom(account: Accounts) {
         viewModelScope.launch {
@@ -43,12 +38,36 @@ class LoginViewModel @Inject constructor(private val repo: Repo) : ViewModel() {
         }
     }
 
-    fun getDrawableSrc(): List<DrawableResourceUrl> {
-        var url: List<DrawableResourceUrl> = emptyList()
+    fun getGuestSessionId(): String {
+        var sessionId: String = ""
         viewModelScope.launch {
-            url = repo.getDrawableSrc()
+            sessionId = repo.getGuestSessionId()
         }
-        return url
+        return sessionId
+    }
+
+    fun createSessionId(tokenValidate: String): String {
+        var sessionId: String = ""
+        viewModelScope.launch {
+            repo.createSessionId(tokenValidate)
+        }
+        return sessionId
+    }
+
+    fun getTokenNew(): String {
+        var tokenNew: String = ""
+        viewModelScope.launch {
+            tokenNew = repo.getTokenNew()
+        }
+        return tokenNew
+    }
+
+    fun createTokenActivated(getToken: Token): String {
+        var token: String = ""
+        viewModelScope.launch {
+            token = repo.createTokenActivated(getToken)
+        }
+        return token
     }
 
 

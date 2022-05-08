@@ -2,12 +2,10 @@ package com.rama.necflix
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.rama.necflix.data.Accounts
-import com.rama.necflix.data.DrawableResourceUrl
-import com.rama.necflix.data.ItemsDao
+import com.rama.necflix.data.*
 
 
-@Database(entities = [(Accounts::class), (DrawableResourceUrl::class)], version = 1, exportSchema = false)
+@Database(entities = [(Accounts::class),(AccountInvitado::class),(GenresDB::class)], version = 5, exportSchema = false)
 abstract class RoomData: RoomDatabase() {
 
     abstract fun itemsDao(): ItemsDao

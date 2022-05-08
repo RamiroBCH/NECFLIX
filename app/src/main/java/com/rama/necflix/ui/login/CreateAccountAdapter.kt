@@ -15,7 +15,7 @@ class CreateAccountAdapter(
     private val itemClickListener: OnDrawableClickListener
 ): RecyclerView.Adapter<BaseViewHolder<*>>() {
     interface OnDrawableClickListener{
-        fun onDrawableClick(imgSrc: String,position: Int)
+        fun onDrawableClick(imgSrc: String, position: Int, bindingRow: AccountImagesRowBinding)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
@@ -40,7 +40,7 @@ class CreateAccountAdapter(
                 .load(item.url)
                 .centerCrop()
                 .into(image)
-            itemView.setOnClickListener{ itemClickListener.onDrawableClick(item.url,position)}
+            itemView.setOnClickListener{ itemClickListener.onDrawableClick(item.url,position,binding)}
         }
     }
 }
