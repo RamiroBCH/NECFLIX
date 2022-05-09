@@ -15,28 +15,27 @@ import com.rama.necflix.LIST_OF_NAME_RESOURCE_URL
 import com.rama.necflix.data.Accounts
 import com.rama.necflix.data.Token
 import com.rama.necflix.databinding.AccountImagesRowBinding
+import com.rama.necflix.vo.Resource
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class CreateAccountFragment : Fragment(), CreateAccountAdapter.OnDrawableClickListener {
-    private val viewModel: LoginViewModel by viewModels<LoginViewModel>()
+    private val viewModel: LoginViewModel by viewModels()
     private var _binding: CreateAccountFragmentBinding? = null
     private val binding get() = _binding!!
-    lateinit var image: String
+    private lateinit var image: String
+    private var activarToken: Token = Token("","","")
+    private var tokenNew: String = ""
+    private var tokenActivado: String = ""
+    private var sessionId: String = ""
     lateinit var account: Accounts
-    lateinit var token: Token
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = CreateAccountFragmentBinding.inflate(inflater, container, false)
-        val root: View = binding.root
-        return root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -49,57 +48,118 @@ class CreateAccountFragment : Fragment(), CreateAccountAdapter.OnDrawableClickLi
         binding.btnCreateAccount.setOnClickListener {
             if (binding.username.text != null || binding.password.text != null) {
                 createAccount()
-                val primaryKey = account.username
-                findNavController().navigate(
-                    CreateAccountFragmentDirections
-                        .actionCreateAccountFragmentToHomeFragment(primaryKey,"0")
-                )
             } else {
                 Toast.makeText(
-                    context, "Ingrese nombre de usuario y contraseña", Toast.LENGTH_LONG
-                ).show()
+                    context, "Ingrese nombre de usuario y contraseña", Toast.LENGTH_LONG)
+                    .show()
             }
         }
-
-
     }
 
     private fun createAccount() {
-        //crar un token
-        var requestToken = getTokenNew()
-        //autorizar requestToken con login
-        token = Token(
-            binding.password.text.toString(),
-            requestToken,
-            binding.username.text.toString()
-        )
-        var requestTokenValidate = createTokenActivated(token)
-        //obtenemos un requestToken autorizado
+        //obtener un token
+        getTokenNew()
+        //autorizar el token con login
+        createTokenActivated(activarToken)
         //crear una session id y actualizar en room
-        val sessionId: String = createSessionId(requestTokenValidate)
+        createSessionId(tokenActivado)
+        //crear objeto Accounts con los datos
+        //nombre de usuario, contraseña, sessionId y Image de perfil
+        createAccountObject()
+        //ponemos el objeto creado en room
+        insertAccountObjectToRoom()
+        //ir al fragmento Home pasando el nombre como dato primary key
+        goToHomeFragment()
+    }
+    //Obtener el token
+    private fun getTokenNew() {
+        return viewModel.getTokenNew.observe(viewLifecycleOwner, { token ->
+            when(token){
+                is Resource.Loading -> {
+                    Toast.makeText(requireContext(), "Obteniendo Token", Toast.LENGTH_SHORT )
+                        .show()
+                }
+                is Resource.Success -> {
+                    tokenNew = token.data
+                    activarToken = Token(
+                        binding.password.text.toString(),
+                        tokenNew,
+                        binding.username.text.toString()
+                    )
+                    Toast.makeText(requireContext(), "Token Obtenido", Toast.LENGTH_SHORT )
+                        .show()
+                }
+                is Resource.Failure -> {
+                    Toast.makeText(requireContext(), "Error ${token.exception}", Toast.LENGTH_LONG )
+                        .show()
+                }
+            }
+        })
+    }
+    //activarlo
+    private fun createTokenActivated(getToken: Token) {
+        viewModel.getToken = getToken
+        return viewModel.createTokenActivated.observe(viewLifecycleOwner, { actToken ->
+            when(actToken){
+                is Resource.Loading -> {
+                    Toast.makeText(requireContext(), "Activando", Toast.LENGTH_SHORT )
+                        .show()
+                }
+                is Resource.Success -> {
+                    tokenActivado = actToken.data
+                    Toast.makeText(requireContext(), "Token activado", Toast.LENGTH_SHORT )
+                        .show()
+                }
+                is Resource.Failure -> {
+                    Toast.makeText(requireContext(), "Error ${actToken.exception}", Toast.LENGTH_LONG )
+                        .show()
+                }
+            }
+        })
+    }
+    //crear un id de sesion
+    private fun createSessionId(tokenValidate: String) {
+        viewModel.tokenValidate = tokenValidate
+        return viewModel.createSessionId.observe(viewLifecycleOwner, { session ->
+            when(session){
+                is Resource.Loading -> {
+                    Toast.makeText(requireContext(), "Creando Id de sesion", Toast.LENGTH_SHORT )
+                        .show()
+                }
+                is Resource.Success -> {
+                    sessionId = session.data
+                    Toast.makeText(requireContext(), "Id de sesion creado", Toast.LENGTH_SHORT )
+                        .show()
+                }
+                is Resource.Failure -> {
+                    Toast.makeText(requireContext(), "Error ${session.exception}", Toast.LENGTH_LONG )
+                        .show()
+                }
+            }
+        })
+    }
+    //crear objeto Accounts con los datos
+    private fun createAccountObject() {
         account = Accounts(
             binding.username.text.toString(),
             binding.password.text.toString(),
-            requestTokenValidate,
+            tokenActivado,
             sessionId,
             image
         )
-        //ponemos en room
+    }
+    //ponemos el objeto creado en room
+    private fun insertAccountObjectToRoom() {
         viewModel.insertAccountToRoom(account)
     }
-
-    private fun createTokenActivated(getToken: Token): String {
-        return viewModel.createTokenActivated(getToken)
+    //vamos a Home
+    private fun goToHomeFragment() {
+        val primaryKey = account.username
+        findNavController().navigate(
+            CreateAccountFragmentDirections
+                .actionCreateAccountFragmentToHomeFragment(primaryKey,"0")
+        )
     }
-
-    private fun getTokenNew(): String {
-        return viewModel.getTokenNew()
-    }
-
-    private fun createSessionId(tokenValidate: String): String {
-        return viewModel.createSessionId(tokenValidate)
-    }
-
 
     private fun setupRecyclerView() {
         binding.userImages.layoutManager =
@@ -115,7 +175,6 @@ class CreateAccountFragment : Fragment(), CreateAccountAdapter.OnDrawableClickLi
                 DividerItemDecoration.VERTICAL
             )
         )
-
     }
 
     override fun onDrawableClick(

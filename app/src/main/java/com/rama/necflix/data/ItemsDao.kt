@@ -16,8 +16,8 @@ interface ItemsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAccountInvitado(token: AccountInvitado)
 
-    @Query("SELECT * FROM INVITADO[0]")
-    suspend fun getAccountInvitado(): AccountInvitado
+    @Query("SELECT * FROM INVITADO where id == :id")
+    suspend fun getAccountInvitado(id: Int): AccountInvitado?
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertGenre(genre: GenresDB)

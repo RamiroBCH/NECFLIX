@@ -16,23 +16,23 @@ class RepoImpl @Inject constructor(private val datasource: Datasource): Repo {
         return datasource.getAccountsFromDatabase()
     }
 
-    override suspend fun getGuestSessionId(): String {
+    override suspend fun getGuestSessionId(): Resource<String> {
         return datasource.getGuestSessionId()
     }
 
-    override suspend fun getTokenNew(): String {
+    override suspend fun getTokenNew(): Resource<String> {
         return datasource.getTokenNew()
     }
 
-    override suspend fun createTokenActivated(getToken: Token): String {
+    override suspend fun createTokenActivated(getToken: Token): Resource<String> {
         return datasource.createTokenActivated(getToken)
     }
 
-    override suspend fun createSessionId(tokenValidate: String): String {
+    override suspend fun createSessionId(tokenValidate: String): Resource<String> {
         return datasource.createSessionId(tokenValidate)
     }
 
-    override suspend fun getGenre(): List<GenresDB> {
+    override suspend fun getGenre(): Resource<List<GenresDB>> {
         return datasource.getGenre()
     }
 

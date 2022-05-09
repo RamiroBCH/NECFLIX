@@ -12,7 +12,7 @@ import com.rama.necflix.databinding.ExplistGroupBinding
 
 class FilterByAdapter(
     var genresDB: List<GenresDB>,
-    var map: Map<String, ArrayList<String>>,
+    var map: HashMap<String, List<String>>,
     var words: List<String>
 ) : BaseExpandableListAdapter() {
 

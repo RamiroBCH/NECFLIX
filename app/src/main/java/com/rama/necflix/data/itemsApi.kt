@@ -33,14 +33,6 @@ data class GenreX(
     val id: Int,
     val name: String
 )
-fun genre.asGenreDB(genres: List<GenreX>): List<GenresDB>{
-    var list: List<GenresDB> = emptyList()
-    for(i in genres.indices){
-        list = list + GenresDB(genres[i].id,genres[i].name)
-    }
-    return list
-}
-
 
 data class getMoiviesPopular(
     val page: Int,

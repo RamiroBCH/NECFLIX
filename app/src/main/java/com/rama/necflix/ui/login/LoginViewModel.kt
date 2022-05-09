@@ -23,14 +23,6 @@ class LoginViewModel @Inject constructor(private val repo: Repo) : ViewModel() {
             emit(Resource.Failure(e))
         }
     }
-    /*val getApod = liveData(Dispatchers.IO) {
-        emit(Resource.Loading)
-        try {
-            emit(repo.getItemApod())
-        } catch (e: Exception) {
-            emit(Resource.Failure(e))
-        }
-    }*/
 
     fun insertAccountToRoom(account: Accounts) {
         viewModelScope.launch {
@@ -38,37 +30,39 @@ class LoginViewModel @Inject constructor(private val repo: Repo) : ViewModel() {
         }
     }
 
-    fun getGuestSessionId(): String {
-        var sessionId: String = ""
-        viewModelScope.launch {
-            sessionId = repo.getGuestSessionId()
+    val getGuestSessionId = liveData(Dispatchers.IO) {
+        emit(Resource.Loading)
+        try {
+            emit(repo.getGuestSessionId())
+        }catch (e: Exception){
+            emit(Resource.Failure(e))
         }
-        return sessionId
     }
 
-    fun createSessionId(tokenValidate: String): String {
-        var sessionId: String = ""
-        viewModelScope.launch {
-            repo.createSessionId(tokenValidate)
+    val getTokenNew = liveData(Dispatchers.IO) {
+        emit(Resource.Loading)
+        try {
+            emit(repo.getTokenNew())
+        }catch (e: Exception){
+            emit(Resource.Failure(e))
         }
-        return sessionId
     }
-
-    fun getTokenNew(): String {
-        var tokenNew: String = ""
-        viewModelScope.launch {
-            tokenNew = repo.getTokenNew()
+    var getToken: Token = Token("","","")
+    val createTokenActivated = liveData(Dispatchers.IO) {
+        emit(Resource.Loading)
+        try {
+            emit(repo.createTokenActivated(getToken))
+        }catch (e: Exception){
+            emit(Resource.Failure(e))
         }
-        return tokenNew
     }
-
-    fun createTokenActivated(getToken: Token): String {
-        var token: String = ""
-        viewModelScope.launch {
-            token = repo.createTokenActivated(getToken)
+    var tokenValidate: String = ""
+    val createSessionId = liveData(Dispatchers.IO) {
+        emit(Resource.Loading)
+        try {
+            emit(repo.createSessionId(tokenValidate))
+        }catch (e: Exception){
+            emit(Resource.Failure(e))
         }
-        return token
     }
-
-
 }

@@ -8,11 +8,13 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.rama.necflix.R
 import com.rama.necflix.data.GenresDB
 import com.rama.necflix.databinding.FragmentHomeBinding
+import com.rama.necflix.vo.Resource
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -22,9 +24,9 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     val args: HomeFragmentArgs by navArgs()
-    lateinit var genresDB: List<GenresDB>
-    val map = HashMap<String, ArrayList<String>>()
-    var words = ArrayList<String>()
+    private var genresDB: List<GenresDB> = emptyList()
+    var map = HashMap<String, List<String>>()
+    var words :List<String> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,15 +50,13 @@ class HomeFragment : Fragment() {
         }
     //lo de los expandable list view
         //obtener listas de generos
-        genresDB = getGenreApi()
-        setData(genresDB)
-        val adapterExpList = FilterByAdapter(genresDB,map,words)
-        binding.genero.setAdapter(adapterExpList)
+        getGenreApi()
+        //clicklistener de los items
         binding.genero.setOnChildClickListener { genero, view, groupPosition, childPosition, l ->
             Toast.makeText(context, map[words[groupPosition]]?.get(childPosition), Toast.LENGTH_SHORT).show()
             true
         }
-
+        //clicklistener del viewGroup que contiene los items
         var lastIndex = -1
         binding.genero.setOnGroupExpandListener {
             if (lastIndex != -1 && lastIndex != it){
@@ -66,23 +66,46 @@ class HomeFragment : Fragment() {
             lastIndex = it
         }
     }
-
+    //obtener lista de generos
+    private fun getGenreApi() {
+        return homeViewModel.getGenre.observe(viewLifecycleOwner, Observer {generos ->
+            when(generos){
+                is Resource.Loading -> {
+                    Toast.makeText(
+                        context, "Cargando", Toast.LENGTH_SHORT
+                    ).show()
+                }
+                is Resource.Success -> {
+                    genresDB = generos.data
+                    Toast.makeText(
+                        context, "Datos Cargados", Toast.LENGTH_SHORT
+                    ).show()
+                    /*for(i in genresDB.indices){
+                        Toast.makeText(context, generos.data[i].name, Toast.LENGTH_SHORT).show()
+                    }*/
+                    //configurar los objetos map y words con los datos obtenidos
+                    setData(genresDB)
+                }
+                is Resource.Failure -> {
+                    Toast.makeText(requireContext(), "Error ${generos.exception}", Toast.LENGTH_LONG )
+                        .show()
+                }
+            }
+        })
+    }
+    //
     private fun setData(genresDB: List<GenresDB>) {
-        val listArray : ArrayList<String> = arrayListOf()
+        var list : List<String> = emptyList()
         for(i in genresDB.indices){
-            listArray.add(genresDB[i].name)
-            Toast.makeText(context, listArray[i], Toast.LENGTH_SHORT).show()
+            list = list + genresDB[i].name
+            Toast.makeText(context, list[i], Toast.LENGTH_SHORT).show()
         }
-        map["Generos"] = listArray
-        words = arrayListOf("Genero")
+        map["Generos"] = list
+        words = listOf("Genero")
+        //pasar los datos al adapter
+        val adapterExpList = FilterByAdapter(genresDB,map,words)
+        binding.genero.setAdapter(adapterExpList)
     }
-
-    private fun getGenreApi(): List<GenresDB> {
-        //return homeViewModel.getGenre()
-        val listaDeGeneros: List<GenresDB> = listOf(GenresDB(1, "nombre"),GenresDB(2,"apellido"))
-        return listaDeGeneros
-    }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

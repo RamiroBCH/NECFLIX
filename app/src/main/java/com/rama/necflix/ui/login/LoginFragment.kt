@@ -7,12 +7,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import com.rama.necflix.R
 import com.rama.necflix.data.Accounts
-import com.rama.necflix.data.sessionId
 import com.rama.necflix.databinding.LoginFragmentBinding
 import com.rama.necflix.vo.Resource
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,6 +25,7 @@ class LoginFragment : Fragment(), AccountsImagesAdapter.OnPhotoClickListener {
     lateinit var accounts: List<Accounts>
     lateinit var passwordDB: String
     private var chooseAccount: Accounts? = null
+    var sessionId: String = ""
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,7 +46,7 @@ class LoginFragment : Fragment(), AccountsImagesAdapter.OnPhotoClickListener {
             }else{
                 //mostrar usuarios y pedir contraseña
                 goneOrVisible()
-                Toast.makeText(context,accounts[0].requestToken, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context,"Ingresar contraseña", Toast.LENGTH_SHORT).show()
 
             }
         }
@@ -60,21 +61,40 @@ class LoginFragment : Fragment(), AccountsImagesAdapter.OnPhotoClickListener {
         }
         binding.invitado.setOnClickListener {
             //aqui hay que crear una cuenta de invitado
-            var sessionId = getGuestSessionId()
-            //navega home como invitado
-            Toast.makeText(
-                context, sessionId, Toast.LENGTH_LONG
-            ).show()
-            findNavController()
-                .navigate(LoginFragmentDirections
-                    .actionLoginFragmentToHomeFragment("0",sessionId))
+            getGuestSessionId()
         }
 
     }
 
 
-    private fun getGuestSessionId(): String {
-        return viewModel.getGuestSessionId()
+    private fun getGuestSessionId() {
+        viewModel.getGuestSessionId.observe(viewLifecycleOwner, Observer { result ->
+            when(result){
+                is Resource.Loading -> {
+                    Toast.makeText(
+                        context, "Cargando", Toast.LENGTH_SHORT
+                    ).show()
+                }
+                is Resource.Success -> {
+                    sessionId = result.data
+                    Toast.makeText(
+                        context, "Sesion de invitado creada", Toast.LENGTH_SHORT
+                    ).show()
+                    Toast.makeText(
+                        context, sessionId, Toast.LENGTH_SHORT
+                    ).show()
+                    //navega home como invitado
+
+                    findNavController()
+                        .navigate(LoginFragmentDirections
+                            .actionLoginFragmentToHomeFragment("0",sessionId))
+                }
+                is Resource.Failure -> {
+                    Toast.makeText(requireContext(), "Error ${result.exception}", Toast.LENGTH_LONG ).show()
+
+                }
+            }
+        })
     }
 
     private fun getListAccounts() {
