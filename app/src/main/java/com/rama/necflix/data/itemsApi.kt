@@ -34,7 +34,15 @@ data class GenreX(
     val name: String
 )
 
-data class getMoiviesPopular(
+data class moviesPopular(
+    val page: Int,
+    val results: List<Result>,
+    val total_pages: Int,
+    val total_results: Int
+)
+
+data class nowPlaying(
+    val dates: Dates,
     val page: Int,
     val results: List<Result>,
     val total_pages: Int,
@@ -58,15 +66,9 @@ data class Result(
     val vote_count: Int
 )
 
-data class getMoviesNowPlaying(
-    val dates: Dates,
-    val page: Int,
-    val results: List<Result>,
-    val total_pages: Int,
-    val total_results: Int
-)
-
 data class Dates(
     val maximum: String,
     val minimum: String
 )
+
+

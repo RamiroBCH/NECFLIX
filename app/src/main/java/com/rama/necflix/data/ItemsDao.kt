@@ -24,4 +24,10 @@ interface ItemsDao {
 
     @Query("SELECT * FROM GENRES")
     suspend fun getGenre(): List<GenresDB>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertListNowPlaying(nowPlayingList: NowPlayingDB)
+
+    @Query("SELECT * FROM NOWPLAYING")
+    suspend fun getNowPlaying(): List<NowPlayingDB>
 }

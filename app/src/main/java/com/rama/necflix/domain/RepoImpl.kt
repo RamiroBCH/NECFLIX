@@ -1,9 +1,6 @@
 package com.rama.necflix.domain
 
-import com.rama.necflix.data.Accounts
-import com.rama.necflix.data.GenresDB
-import com.rama.necflix.data.Token
-import com.rama.necflix.data.genre
+import com.rama.necflix.data.*
 import com.rama.necflix.vo.Resource
 import javax.inject.Inject
 
@@ -34,6 +31,10 @@ class RepoImpl @Inject constructor(private val datasource: Datasource): Repo {
 
     override suspend fun getGenre(): Resource<List<GenresDB>> {
         return datasource.getGenre()
+    }
+
+    override suspend fun getNowPlaying(): Resource<List<NowPlayingDB>> {
+        return datasource.getNowPlaying()
     }
 
 }

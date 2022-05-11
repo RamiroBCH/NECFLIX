@@ -25,9 +25,10 @@
         <entry key="..\:/Users/ram/AndroidStudioProjects/NECFLIX/app/src/main/res/layout/fragment_details.xml" value="0.1671195652173913" />
         <entry key="..\:/Users/ram/AndroidStudioProjects/NECFLIX/app/src/main/res/layout/fragment_discover.xml" value="0.2359375" />
         <entry key="..\:/Users/ram/AndroidStudioProjects/NECFLIX/app/src/main/res/layout/fragment_gallery.xml" value="0.1671195652173913" />
-        <entry key="..\:/Users/ram/AndroidStudioProjects/NECFLIX/app/src/main/res/layout/fragment_home.xml" value="0.16" />
+        <entry key="..\:/Users/ram/AndroidStudioProjects/NECFLIX/app/src/main/res/layout/fragment_home.xml" value="0.2" />
         <entry key="..\:/Users/ram/AndroidStudioProjects/NECFLIX/app/src/main/res/layout/fragment_login.xml" value="0.1671195652173913" />
         <entry key="..\:/Users/ram/AndroidStudioProjects/NECFLIX/app/src/main/res/layout/fragment_slideshow.xml" value="0.13496376811594202" />
+        <entry key="..\:/Users/ram/AndroidStudioProjects/NECFLIX/app/src/main/res/layout/item_recycler_now_playing.xml" value="0.2" />
         <entry key="..\:/Users/ram/AndroidStudioProjects/NECFLIX/app/src/main/res/layout/login_fragment.xml" value="0.2" />
         <entry key="..\:/Users/ram/AndroidStudioProjects/NECFLIX/app/src/main/res/layout/nav_header_main.xml" value="0.2" />
         <entry key="..\:/Users/ram/AndroidStudioProjects/NECFLIX/app/src/main/res/layout/now_playing_row.xml" value="0.10230352303523035" />

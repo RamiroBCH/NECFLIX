@@ -22,7 +22,7 @@ class FilterByAdapter(
     }
 
     override fun getChildrenCount(p0: Int): Int {
-        return map[words[p0]]?.size!!
+        return map[words[p0]]?.size ?: return 0
     }
 
     override fun getGroup(p0: Int): String {

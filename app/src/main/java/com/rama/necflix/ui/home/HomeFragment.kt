@@ -1,5 +1,6 @@
 package com.rama.necflix.ui.home
 
+import android.icu.lang.UCharacter
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,14 +12,17 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.rama.necflix.R
 import com.rama.necflix.data.GenresDB
+import com.rama.necflix.data.NowPlayingDB
 import com.rama.necflix.databinding.FragmentHomeBinding
 import com.rama.necflix.vo.Resource
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), NowPlayingAdapter.OnNowPlayingClickListener {
 
     private val homeViewModel by viewModels<HomeViewModel>()
     private var _binding: FragmentHomeBinding? = null
@@ -48,7 +52,12 @@ class HomeFragment : Fragment() {
         if( primaryKey == "no" || guestSessionId == "no") {
             findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
         }
-    //lo de los expandable list view
+//RECYCLERVIEW NOWPLAYING
+        //obtener los datos nowplaying
+        setPlayingRecyclerView()
+        getDataNowPlaying()
+//***************************************************************
+//EXPANDABLELISTVIEW
         //obtener listas de generos
         getGenreApi()
         //clicklistener de los items
@@ -65,7 +74,35 @@ class HomeFragment : Fragment() {
             Log.d("tag", "onCreate: $it $lastIndex")
             lastIndex = it
         }
+//*******************************************************
+
     }
+
+    private fun setPlayingRecyclerView() {
+        binding.recyclerNowplaying.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL, false)
+        binding.recyclerNowplaying.addItemDecoration(DividerItemDecoration(requireContext(),DividerItemDecoration.VERTICAL))
+    }
+
+    private fun getDataNowPlaying() {
+        return homeViewModel.getNowPlaying.observe(viewLifecycleOwner, Observer { list ->
+            when(list){
+                is Resource.Loading -> {
+                    Toast.makeText(
+                        context, "Cargando", Toast.LENGTH_SHORT
+                    ).show()
+                }
+                is Resource.Success -> {
+                    //pasar los datos nowplaying a nowPlayingAdapter
+                    binding.recyclerNowplaying.adapter = NowPlayingAdapter(requireContext(),list.data,this)
+                }
+                is Resource.Failure -> {
+                    Toast.makeText(requireContext(), "Error ${list.exception}", Toast.LENGTH_LONG )
+                        .show()
+                }
+            }
+        })
+    }
+
     //obtener lista de generos
     private fun getGenreApi() {
         return homeViewModel.getGenre.observe(viewLifecycleOwner, Observer {generos ->
@@ -93,22 +130,28 @@ class HomeFragment : Fragment() {
             }
         })
     }
-    //
+    //pasar los datos al adapter del boton filtrar por generos
     private fun setData(genresDB: List<GenresDB>) {
         var list : List<String> = emptyList()
         for(i in genresDB.indices){
             list = list + genresDB[i].name
-            Toast.makeText(context, list[i], Toast.LENGTH_SHORT).show()
+            //Toast.makeText(context, list[i], Toast.LENGTH_SHORT).show()
         }
         map["Generos"] = list
-        words = listOf("Genero")
+        words = listOf("Generos")
         //pasar los datos al adapter
         val adapterExpList = FilterByAdapter(genresDB,map,words)
         binding.genero.setAdapter(adapterExpList)
+    }
+
+    override fun onNowPlayingClickListener(item: NowPlayingDB, position: Int) {
+        Toast.makeText(context,item.id.toString(),Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
+
+
 }

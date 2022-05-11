@@ -35,3 +35,36 @@ data class GenresDB(
     @ColumnInfo
     val name:String
 )
+
+@Entity(tableName = "NOWPLAYING")
+data class NowPlayingDB(
+    @PrimaryKey
+    @ColumnInfo
+    val id: Int,
+    @ColumnInfo
+    val adult: Boolean,
+    @ColumnInfo
+    val backdrop_path: String,
+    @ColumnInfo
+    val genre_ids: Int,
+    @ColumnInfo
+    val original_language: String,
+    @ColumnInfo
+    val original_title: String,
+    @ColumnInfo
+    val overview: String,
+    @ColumnInfo
+    val popularity: Double,
+    @ColumnInfo
+    val poster_path: String,
+    @ColumnInfo
+    val release_date: String,
+    @ColumnInfo
+    val title: String,
+    @ColumnInfo
+    val video: Boolean,
+    @ColumnInfo
+    val vote_average: Double,
+    @ColumnInfo
+    val vote_count: Int
+)

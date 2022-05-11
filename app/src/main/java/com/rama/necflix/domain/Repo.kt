@@ -1,9 +1,6 @@
 package com.rama.necflix.domain
 
-import com.rama.necflix.data.Accounts
-import com.rama.necflix.data.GenresDB
-import com.rama.necflix.data.Token
-import com.rama.necflix.data.genre
+import com.rama.necflix.data.*
 import com.rama.necflix.vo.Resource
 
 
@@ -15,4 +12,5 @@ interface Repo {
     suspend fun createTokenActivated(getToken: Token): Resource<String>
     suspend fun createSessionId(tokenValidate: String): Resource<String>
     suspend fun getGenre(): Resource<List<GenresDB>>
+    suspend fun getNowPlaying(): Resource<List<NowPlayingDB>>
 }
