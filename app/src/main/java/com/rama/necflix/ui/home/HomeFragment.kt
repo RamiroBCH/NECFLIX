@@ -24,6 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class HomeFragment : Fragment(), NowPlayingAdapter.OnNowPlayingClickListener {
 
+    private var countListNowPlaying: Int = 0
     private val homeViewModel by viewModels<HomeViewModel>()
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -56,6 +57,7 @@ class HomeFragment : Fragment(), NowPlayingAdapter.OnNowPlayingClickListener {
         //obtener los datos nowplaying
         setPlayingRecyclerView()
         getDataNowPlaying()
+        smoothScrolling(countListNowPlaying, binding)
 //***************************************************************
 //EXPANDABLELISTVIEW
         //obtener listas de generos
@@ -92,6 +94,7 @@ class HomeFragment : Fragment(), NowPlayingAdapter.OnNowPlayingClickListener {
                     ).show()
                 }
                 is Resource.Success -> {
+                    countListNowPlaying = list.data.size
                     //pasar los datos nowplaying a nowPlayingAdapter
                     binding.recyclerNowplaying.adapter = NowPlayingAdapter(requireContext(),list.data,this)
                 }
@@ -101,6 +104,11 @@ class HomeFragment : Fragment(), NowPlayingAdapter.OnNowPlayingClickListener {
                 }
             }
         })
+    }
+
+    //Movimiento automatico
+    private fun smoothScrolling(count: Int,binding: FragmentHomeBinding) {
+        homeViewModel.smoothScrolling(count, binding)
     }
 
     //obtener lista de generos
