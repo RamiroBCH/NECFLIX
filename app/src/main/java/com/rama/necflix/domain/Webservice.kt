@@ -22,7 +22,6 @@ interface Webservice {
         @Body request_token: String
     ): sessionId
 
-
     @GET("authentication/guest_session/new")
     suspend fun getGuestSessionId(
         @Query("api_key") api_key: String
@@ -35,8 +34,25 @@ interface Webservice {
 
     @GET("movie/now_playing")
     suspend fun getNowPlaying(
-        @Query("api_key")api_key: String,
+        @Query("api_key") api_key: String,
         @Query("language") language : String
     ): nowPlaying
 
+    @GET("movie/upcoming")
+    suspend fun getUpcomingMovies(
+        @Query("api_key") api_key: String,
+        @Query("language") language: String
+    ): upcomingMovies
+
+    @GET("movie/popular")
+    suspend fun getMoviesPopular(
+        @Query("api_key") api_key: String,
+        @Query("language") language: String
+    ): moviesPopular
+
+    @GET("movie/top_rated")
+    suspend fun getTopRated(
+        @Query("api_key") api_key: String,
+        @Query("language") language: String
+    ): topRated
 }

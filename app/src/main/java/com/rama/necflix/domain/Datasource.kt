@@ -12,5 +12,8 @@ interface Datasource {
     suspend fun createTokenActivated(getToken: Token): Resource<String>
     suspend fun createSessionId(tokenValidate: String): Resource<String>
     suspend fun getGenre(): Resource<List<GenresDB>>
-    suspend fun getNowPlaying(): Resource<List<NowPlayingDB>>
+    suspend fun getNowPlaying(): Resource<List<resultsDB>>
+    suspend fun getUpcomingMovies(): Resource<List<resultsDB>>
+    suspend fun getMoviesPopular(): Resource<List<resultsDB>>
+    suspend fun getMoviesTopRated(): Resource<List<resultsDB>>
 }

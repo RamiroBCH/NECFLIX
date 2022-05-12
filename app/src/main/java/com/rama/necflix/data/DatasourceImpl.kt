@@ -8,6 +8,7 @@ import javax.inject.Inject
 class DatasourceImpl @Inject constructor(val itemsDao: ItemsDao, val webservice: Webservice) :
     Datasource {
     val apikey = "f937e50a9ebe2079954b39dfed897360"
+    val language = "es-ES"
 
     override suspend fun insertAccountToRoom(account: Accounts) {
         itemsDao.insertAccount(account)
@@ -50,32 +51,85 @@ class DatasourceImpl @Inject constructor(val itemsDao: ItemsDao, val webservice:
         return Resource.Success(listDB)
     }
 
-    override suspend fun getNowPlaying(): Resource<List<NowPlayingDB>> {
-        val language = "es-ES"
-        val nowPlayingList = webservice.getNowPlaying(apikey, language).results.map {
-            NowPlayingDB(
-                it.id,
-                it.adult,
-                it.backdrop_path,
-                it.genre_ids[0],
-                it.original_language,
-                it.original_title,
-                it.overview,
-                it.popularity,
-                it.poster_path,
-                it.release_date,
-                it.title,
-                it.video,
-                it.vote_average,
-                it.vote_count
-            )
-        }
-        for (i in nowPlayingList.indices){
-            itemsDao.insertListNowPlaying(nowPlayingList[i])
-        }
-        val listNowPlayingDB = itemsDao.getNowPlaying()
-
-        return Resource.Success(listNowPlayingDB)
+    override suspend fun getNowPlaying(): Resource<List<resultsDB>> {
+        val type = "nowplaying"
+        val nowPlayingList = webservice.getNowPlaying(apikey, language).results
+        val convert = mapConvert(nowPlayingList,type)
+        return Resource.Success(convert)
     }
 
+    override suspend fun getUpcomingMovies(): Resource<List<resultsDB>> {
+        val type = "Upcoming"
+        val upcomingMoviesList = webservice.getUpcomingMovies(apikey, language).results
+        val convert = mapConvert(upcomingMoviesList,type)
+        insertDB(convert)
+        val upcomingMoviesListDB = itemsDao.getMoviesFromDB(type)
+        return Resource.Success(upcomingMoviesListDB)
+    }
+
+    override suspend fun getMoviesPopular(): Resource<List<resultsDB>> {
+        val type = "Popular"
+        val moviesPopularList = webservice.getMoviesPopular(apikey, language).results
+        val listConvert = mapConvert(moviesPopularList,type)
+        insertDB(listConvert)
+        val moviesPopularListDB = itemsDao.getMoviesFromDB(type)
+        return Resource.Success(moviesPopularListDB)
+    }
+
+    override suspend fun getMoviesTopRated(): Resource<List<resultsDB>> {
+        val type = "Top Rated"
+        val moviesTopRatedList = webservice.getTopRated(apikey, language).results
+        val listConvert = mapConvert(moviesTopRatedList, type)
+        insertDB(listConvert)
+        val moviesTopRatedListDB = itemsDao.getMoviesFromDB(type)
+        return Resource.Success(moviesTopRatedListDB)
+    }
+    //******************************************************************************************
+    //funcion para insertar en room
+    suspend fun insertDB(convert: List<resultsDB>) {
+        for (i in convert.indices) {
+            itemsDao.insertUpcomingMovie(
+                resultsDB(
+                    convert[i].id,
+                    convert[i].type,
+                    convert[i].adult,
+                    convert[i].backdrop_path,
+                    convert[i].genre_ids,
+                    convert[i].original_language,
+                    convert[i].original_title,
+                    convert[i].overview,
+                    convert[i].popularity,
+                    convert[i].poster_path,
+                    convert[i].release_date,
+                    convert[i].title,
+                    convert[i].video,
+                    convert[i].vote_average,
+                    convert[i].vote_count
+                )
+            )
+        }
+    }
 }
+
+fun mapConvert(results: List<Result>, type: String): List<resultsDB> {
+    return results.map {
+        resultsDB(
+            it.id,
+            type,
+            it.adult,
+            it.backdrop_path,
+            it.genre_ids[0],
+            it.original_language,
+            it.original_title,
+            it.overview,
+            it.popularity,
+            it.poster_path,
+            it.release_date,
+            it.title,
+            it.video,
+            it.vote_average,
+            it.vote_count
+        )
+    }
+}
+

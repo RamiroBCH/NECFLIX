@@ -33,8 +33,20 @@ class RepoImpl @Inject constructor(private val datasource: Datasource): Repo {
         return datasource.getGenre()
     }
 
-    override suspend fun getNowPlaying(): Resource<List<NowPlayingDB>> {
+    override suspend fun getNowPlaying(): Resource<List<resultsDB>> {
         return datasource.getNowPlaying()
+    }
+
+    override suspend fun getUpcomingMovies(): Resource<List<resultsDB>> {
+        return datasource.getUpcomingMovies()
+    }
+
+    override suspend fun getMoviesPopular(): Resource<List<resultsDB>> {
+        return datasource.getMoviesPopular()
+    }
+
+    override suspend fun getMoviesTopRated(): Resource<List<resultsDB>> {
+        return  datasource.getMoviesTopRated()
     }
 
 }

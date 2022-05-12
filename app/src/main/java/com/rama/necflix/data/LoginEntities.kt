@@ -36,11 +36,13 @@ data class GenresDB(
     val name:String
 )
 
-@Entity(tableName = "NOWPLAYING")
-data class NowPlayingDB(
+@Entity(tableName = "RESULTSDB")
+data class resultsDB(
     @PrimaryKey
     @ColumnInfo
     val id: Int,
+    @ColumnInfo
+    val type: String,
     @ColumnInfo
     val adult: Boolean,
     @ColumnInfo

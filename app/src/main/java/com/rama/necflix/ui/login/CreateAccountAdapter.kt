@@ -15,7 +15,12 @@ class CreateAccountAdapter(
     private val itemClickListener: OnDrawableClickListener
 ): RecyclerView.Adapter<BaseViewHolder<*>>() {
     interface OnDrawableClickListener{
-        fun onDrawableClick(imgSrc: String, position: Int, bindingRow: AccountImagesRowBinding)
+        fun onDrawableClick(
+            imgSrc: String,
+            position: Int,
+            bindingRow: AccountImagesRowBinding,
+            accountImgs: List<DrawableResourceUrl>
+        )
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
@@ -25,9 +30,11 @@ class CreateAccountAdapter(
     }
 
     override fun onBindViewHolder(holder: BaseViewHolder<*>, position: Int) {
+
         when (holder) {
             is MainViewHolder -> holder.bind(accountImgs[position], position)
         }
+
     }
 
     override fun getItemCount(): Int {
@@ -40,7 +47,7 @@ class CreateAccountAdapter(
                 .load(item.url)
                 .centerCrop()
                 .into(image)
-            itemView.setOnClickListener{ itemClickListener.onDrawableClick(item.url,position,binding)}
+            itemView.setOnClickListener{ itemClickListener.onDrawableClick(item.url,position,binding,accountImgs)}
         }
     }
 }

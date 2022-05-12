@@ -1,6 +1,5 @@
 package com.rama.necflix.ui.home
 
-import android.icu.lang.UCharacter
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,16 +12,17 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.rama.necflix.R
 import com.rama.necflix.data.GenresDB
-import com.rama.necflix.data.NowPlayingDB
+import com.rama.necflix.data.resultsDB
 import com.rama.necflix.databinding.FragmentHomeBinding
 import com.rama.necflix.vo.Resource
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class HomeFragment : Fragment(), NowPlayingAdapter.OnNowPlayingClickListener {
+class HomeFragment : Fragment(), MoviesAdapter.OnClickListener {
 
     private var countListNowPlaying: Int = 0
     private val homeViewModel by viewModels<HomeViewModel>()
@@ -53,17 +53,25 @@ class HomeFragment : Fragment(), NowPlayingAdapter.OnNowPlayingClickListener {
         if( primaryKey == "no" || guestSessionId == "no") {
             findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
         }
-//RECYCLERVIEW NOWPLAYING
+//RECYCLERVIEW NOWPLAYING****************************************************************
         //obtener los datos nowplaying
         setPlayingRecyclerView()
         getDataNowPlaying()
-        smoothScrolling(countListNowPlaying, binding)
-//***************************************************************
-//EXPANDABLELISTVIEW
+//RECYCLERVIEW MOVIES AND TV SHOWS*******************************************************
+        //obtener los datos movies tv shows
+        setMoviesTvShowsRecyclerView()
+        getMoviesFromDB()
+//***************************************************************************************
+//***************************************************************************************
+//EXPANDABLELISTVIEW GENRE***************************************************************
         //obtener listas de generos
         getGenreApi()
         //clicklistener de los items
         binding.genero.setOnChildClickListener { genero, view, groupPosition, childPosition, l ->
+            //homeViewModel.setGenre(map[words[groupPosition]]?.get(childPosition).toString())
+            if (groupPosition == 1){
+                homeViewModel.setType(map[words[groupPosition]]?.get(childPosition).toString())
+            }
             Toast.makeText(context, map[words[groupPosition]]?.get(childPosition), Toast.LENGTH_SHORT).show()
             true
         }
@@ -76,13 +84,21 @@ class HomeFragment : Fragment(), NowPlayingAdapter.OnNowPlayingClickListener {
             Log.d("tag", "onCreate: $it $lastIndex")
             lastIndex = it
         }
-//*******************************************************
+//***************************************************************************************
+//EXPANDABLELISTVIEW TYPE****************************************************************
+        homeViewModel.setType("Upcoming")
+//***************************************************************************************
 
     }
 
     private fun setPlayingRecyclerView() {
         binding.recyclerNowplaying.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL, false)
         binding.recyclerNowplaying.addItemDecoration(DividerItemDecoration(requireContext(),DividerItemDecoration.VERTICAL))
+    }
+
+    private fun setMoviesTvShowsRecyclerView(){
+        binding.recyclerMoviestvshows.layoutManager = GridLayoutManager(requireContext(),2,GridLayoutManager.VERTICAL,false)
+        binding.recyclerMoviestvshows.addItemDecoration(DividerItemDecoration(requireContext(),DividerItemDecoration.VERTICAL))
     }
 
     private fun getDataNowPlaying() {
@@ -96,10 +112,31 @@ class HomeFragment : Fragment(), NowPlayingAdapter.OnNowPlayingClickListener {
                 is Resource.Success -> {
                     countListNowPlaying = list.data.size
                     //pasar los datos nowplaying a nowPlayingAdapter
-                    binding.recyclerNowplaying.adapter = NowPlayingAdapter(requireContext(),list.data,this)
+                    binding.recyclerNowplaying.adapter = MoviesAdapter(requireContext(),list.data,this)
+                    smoothScrolling(countListNowPlaying, binding)
                 }
                 is Resource.Failure -> {
                     Toast.makeText(requireContext(), "Error ${list.exception}", Toast.LENGTH_LONG )
+                        .show()
+                }
+            }
+        })
+    }
+
+    private fun getMoviesFromDB(){
+        return homeViewModel.getMoviesFromDB.observe(viewLifecycleOwner, Observer { result ->
+            when(result){
+                is Resource.Loading -> {
+                    Toast.makeText(
+                        context, "Cargando", Toast.LENGTH_SHORT
+                    ).show()
+                }
+                is Resource.Success -> {
+                    //pasar los datos al adapter
+                    binding.recyclerMoviestvshows.adapter = MoviesAdapter(requireContext(), result.data, this)
+                }
+                is Resource.Failure -> {
+                    Toast.makeText(requireContext(), "Error ${result.exception}", Toast.LENGTH_LONG )
                         .show()
                 }
             }
@@ -138,7 +175,7 @@ class HomeFragment : Fragment(), NowPlayingAdapter.OnNowPlayingClickListener {
             }
         })
     }
-    //pasar los datos al adapter del boton filtrar por generos
+    //pasar los datos al adapter del boton filtrar
     private fun setData(genresDB: List<GenresDB>) {
         var list : List<String> = emptyList()
         for(i in genresDB.indices){
@@ -146,13 +183,18 @@ class HomeFragment : Fragment(), NowPlayingAdapter.OnNowPlayingClickListener {
             //Toast.makeText(context, list[i], Toast.LENGTH_SHORT).show()
         }
         map["Generos"] = list
-        words = listOf("Generos")
+        map["Filter by"] = arrayListOf("Upcoming","Popular", "Top Rated")
+        words = listOf("Generos","Filter by")
         //pasar los datos al adapter
         val adapterExpList = FilterByAdapter(genresDB,map,words)
         binding.genero.setAdapter(adapterExpList)
     }
 
-    override fun onNowPlayingClickListener(item: NowPlayingDB, position: Int) {
+    override fun onNowPlayingClickListener(item: resultsDB, position: Int) {
+        Toast.makeText(context,item.id.toString(),Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onMoviesTvShowsClickListener(item: resultsDB, position: Int) {
         Toast.makeText(context,item.id.toString(),Toast.LENGTH_SHORT).show()
     }
 

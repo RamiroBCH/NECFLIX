@@ -1,18 +1,22 @@
 package com.rama.necflix.ui.login
 
+import android.content.res.Resources
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.get
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import com.rama.necflix.databinding.CreateAccountFragmentBinding
 import com.rama.necflix.LIST_OF_NAME_RESOURCE_URL
+import com.rama.necflix.R
 import com.rama.necflix.data.Accounts
+import com.rama.necflix.data.DrawableResourceUrl
 import com.rama.necflix.data.Token
 import com.rama.necflix.databinding.AccountImagesRowBinding
 import com.rama.necflix.vo.Resource
@@ -180,8 +184,17 @@ class CreateAccountFragment : Fragment(), CreateAccountAdapter.OnDrawableClickLi
     override fun onDrawableClick(
         imgSrc: String,
         position: Int,
-        bindingRow: AccountImagesRowBinding
+        bindingRow: AccountImagesRowBinding,
+        accountImgs: List<DrawableResourceUrl>
     ) {
+        for(i in accountImgs.indices){
+            binding.userImages[i].isSelected = false
+            binding.userImages[i].setBackgroundColor(resources.getColor(R.color.white))
+        }
+        binding.userImages[position].isSelected = true
+        when(binding.userImages[position].isSelected){
+            true -> binding.userImages[position].setBackgroundColor(resources.getColor(R.color.lightRed))
+        }
         binding.btnCreateAccount.visibility = View.VISIBLE
         image = imgSrc
     }

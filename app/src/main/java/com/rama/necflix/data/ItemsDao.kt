@@ -16,7 +16,7 @@ interface ItemsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAccountInvitado(token: AccountInvitado)
 
-    @Query("SELECT * FROM INVITADO where id == :id")
+    @Query("SELECT * FROM INVITADO WHERE id == :id")
     suspend fun getAccountInvitado(id: Int): AccountInvitado?
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
@@ -25,9 +25,9 @@ interface ItemsDao {
     @Query("SELECT * FROM GENRES")
     suspend fun getGenre(): List<GenresDB>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertListNowPlaying(nowPlayingList: NowPlayingDB)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertUpcomingMovie(resultsDB :resultsDB)
 
-    @Query("SELECT * FROM NOWPLAYING")
-    suspend fun getNowPlaying(): List<NowPlayingDB>
+    @Query("SELECT * FROM RESULTSDB WHERE type == :type")
+    suspend fun getMoviesFromDB(type: String): List<resultsDB>
 }
