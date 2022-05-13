@@ -1,87 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@color/backgroudFriendly"
-    android:scrollbarSize="3dp"
-    android:scrollbarStyle="insideOverlay"
-    android:scrollbars="vertical"
-    android:isScrollContainer="true"
     android:padding="4dp"
     tools:context=".ui.home.HomeFragment">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:background="@color/backgroudFriendly"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:orientation="horizontal"
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:layout_marginBottom="4dp"
-            android:gravity="center">
+            android:orientation="horizontal">
 
             <SearchView
                 android:id="@+id/search"
                 android:layout_width="wrap_content"
-                android:layout_height="48dp"
+                android:layout_height="38dp"
                 android:layout_weight="1"
                 android:clickable="true"
                 android:focusable="true"
                 android:inputType="text"
                 android:queryHint="busca peliculas o series"
-                android:searchIcon="@drawable/ic_baseline_search_24" />
+                android:searchIcon="@drawable/ic_baseline_search_24"
+                tools:ignore="TouchTargetSizeCheck" />
 
             <TextView
                 android:id="@+id/name_app"
                 android:layout_width="wrap_content"
-                android:layout_height="48dp"
+                android:layout_height="match_parent"
                 android:layout_weight="16"
                 android:background="@color/backgroudFriendly"
                 android:gravity="center"
                 android:text="@string/app_name"
-                android:textSize="40sp" />
+                android:textColor="@color/white"
+                android:textSize="30sp"
+                tools:ignore="TextContrastCheck" />
 
             <ImageView
                 android:id="@+id/btnModo"
                 android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_height="38dp"
                 android:layout_weight="1"
                 android:clickable="true"
                 android:contentDescription="@string/modooscuro"
                 android:focusable="true"
-                android:src="@drawable/ic_baseline_dark_mode_24" />
+                android:src="@drawable/ic_baseline_dark_mode_24"
+                tools:ignore="TouchTargetSizeCheck,ImageContrastCheck" />
         </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_nowplaying"
-            android:layout_marginBottom="4dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <LinearLayout
+        <ExpandableListView
+            android:id="@+id/genero"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:nestedScrollingEnabled="true"
+            android:layout_height="120dp"
+            android:divider="#0000FF"
+            android:dividerHeight="2dp" />
 
-            <ExpandableListView
-                android:id="@+id/genero"
-                android:layout_marginBottom="4dp"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_nowplaying"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:divider="#0000FF"
-                android:dividerHeight="2dp" />
-        </LinearLayout>
+                android:layout_height="wrap_content" />
 
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_moviestvshows"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_moviestvshows"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
     </LinearLayout>
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

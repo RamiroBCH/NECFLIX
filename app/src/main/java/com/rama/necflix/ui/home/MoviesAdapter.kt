@@ -2,11 +2,13 @@ package com.rama.necflix.ui.home
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.rama.necflix.data.resultsDB
+import com.rama.necflix.data.topRated
 import com.rama.necflix.databinding.ItemRecyclerNowPlayingBinding
 import com.rama.necflix.databinding.MoviesAndTvshowsRowBinding
 import com.rama.necflix.ui.BaseViewHolder
@@ -14,7 +16,8 @@ import com.rama.necflix.ui.BaseViewHolder
 class MoviesAdapter(
     private val context: Context,
     private val listResultsDB: List<resultsDB>,
-    private val onClickListener: OnClickListener
+    private val onClickListener: OnClickListener,
+    private val type: String
 ) : RecyclerView.Adapter<BaseViewHolder<*>>() {
     interface OnClickListener {
         fun onNowPlayingClickListener(item: resultsDB, position: Int)
@@ -22,12 +25,22 @@ class MoviesAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
+        val now = "nowplaying"
         val itemBinding = ItemRecyclerNowPlayingBinding.inflate(
             LayoutInflater.from(context),
             parent,
             false
         )
-        return PlayViewHolder(itemBinding)
+        val itemMovies = MoviesAndTvshowsRowBinding.inflate(
+            LayoutInflater.from(context),
+            parent,
+            false)
+
+        if(type == now){
+            return PlayViewHolder(itemBinding)
+        }else{
+            return MoviesTVViewHolder(itemMovies)
+        }
     }
 
     override fun onBindViewHolder(holder: BaseViewHolder<*>, position: Int) {
@@ -51,7 +64,6 @@ class MoviesAdapter(
                 .fitCenter()
                 .into(movie)
             title.text = item.title
-            details.text = item.overview
             itemView.setOnClickListener {
                 onClickListener.onNowPlayingClickListener(
                     item,
@@ -61,9 +73,9 @@ class MoviesAdapter(
         }
     }
 
-    inner class MoviesTVViewHolder(val binding: MoviesAndTvshowsRowBinding) :
-        BaseViewHolder<resultsDB>(binding.root) {
-        override fun bind(item: resultsDB, position: Int) = with(binding) {
+    inner class MoviesTVViewHolder(val bindingtwo: MoviesAndTvshowsRowBinding) :
+        BaseViewHolder<resultsDB>(bindingtwo.root) {
+        override fun bind(item: resultsDB, position: Int) = with(bindingtwo) {
             Glide.with(context)
                 .load("https://image.tmdb.org/t/p/original" + item.poster_path)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)

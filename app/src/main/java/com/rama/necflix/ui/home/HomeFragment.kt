@@ -71,8 +71,9 @@ class HomeFragment : Fragment(), MoviesAdapter.OnClickListener {
             //homeViewModel.setGenre(map[words[groupPosition]]?.get(childPosition).toString())
             if (groupPosition == 1){
                 homeViewModel.setType(map[words[groupPosition]]?.get(childPosition).toString())
+            }else{
+                Toast.makeText(context, map[words[groupPosition]]?.get(childPosition), Toast.LENGTH_SHORT).show()
             }
-            Toast.makeText(context, map[words[groupPosition]]?.get(childPosition), Toast.LENGTH_SHORT).show()
             true
         }
         //clicklistener del viewGroup que contiene los items
@@ -112,7 +113,7 @@ class HomeFragment : Fragment(), MoviesAdapter.OnClickListener {
                 is Resource.Success -> {
                     countListNowPlaying = list.data.size
                     //pasar los datos nowplaying a nowPlayingAdapter
-                    binding.recyclerNowplaying.adapter = MoviesAdapter(requireContext(),list.data,this)
+                    binding.recyclerNowplaying.adapter = MoviesAdapter(requireContext(),list.data,this,"nowplaying")
                     smoothScrolling(countListNowPlaying, binding)
                 }
                 is Resource.Failure -> {
@@ -133,7 +134,7 @@ class HomeFragment : Fragment(), MoviesAdapter.OnClickListener {
                 }
                 is Resource.Success -> {
                     //pasar los datos al adapter
-                    binding.recyclerMoviestvshows.adapter = MoviesAdapter(requireContext(), result.data, this)
+                    binding.recyclerMoviestvshows.adapter = MoviesAdapter(requireContext(), result.data, this,"movies")
                 }
                 is Resource.Failure -> {
                     Toast.makeText(requireContext(), "Error ${result.exception}", Toast.LENGTH_LONG )
@@ -195,13 +196,11 @@ class HomeFragment : Fragment(), MoviesAdapter.OnClickListener {
     }
 
     override fun onMoviesTvShowsClickListener(item: resultsDB, position: Int) {
-        Toast.makeText(context,item.id.toString(),Toast.LENGTH_SHORT).show()
+        Toast.makeText(context,"moviesviewholder",Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
-
 }
