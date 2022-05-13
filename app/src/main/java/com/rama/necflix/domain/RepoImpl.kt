@@ -46,7 +46,11 @@ class RepoImpl @Inject constructor(private val datasource: Datasource): Repo {
     }
 
     override suspend fun getMoviesTopRated(): Resource<List<resultsDB>> {
-        return  datasource.getMoviesTopRated()
+        return datasource.getMoviesTopRated()
+    }
+
+    override suspend fun getSearchMulti(search: String): Resource<List<resultsDB>> {
+        return datasource.getSearchMulti(search)
     }
 
 }

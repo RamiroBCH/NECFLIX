@@ -59,7 +59,7 @@ class MoviesAdapter(
         BaseViewHolder<resultsDB>(binding.root) {
         override fun bind(item: resultsDB, position: Int) = with(binding) {
             Glide.with(context)
-                .load("https://image.tmdb.org/t/p/original" + item.poster_path)
+                .load("https://image.tmdb.org/t/p/original" + item.backdrop_path)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .fitCenter()
                 .into(movie)

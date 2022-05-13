@@ -16,4 +16,5 @@ interface Datasource {
     suspend fun getUpcomingMovies(): Resource<List<resultsDB>>
     suspend fun getMoviesPopular(): Resource<List<resultsDB>>
     suspend fun getMoviesTopRated(): Resource<List<resultsDB>>
+    suspend fun getSearchMulti(search: String): Resource<List<resultsDB>>
 }

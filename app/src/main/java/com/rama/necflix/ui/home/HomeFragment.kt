@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -53,15 +54,18 @@ class HomeFragment : Fragment(), MoviesAdapter.OnClickListener {
         if( primaryKey == "no" || guestSessionId == "no") {
             findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
         }
+//SEARCH SETUP***************************************************************************
+        setupSearch()
+//***************************************************************************************
 //RECYCLERVIEW NOWPLAYING****************************************************************
         //obtener los datos nowplaying
         setPlayingRecyclerView()
         getDataNowPlaying()
+//***************************************************************************************
 //RECYCLERVIEW MOVIES AND TV SHOWS*******************************************************
         //obtener los datos movies tv shows
         setMoviesTvShowsRecyclerView()
         getMoviesFromDB()
-//***************************************************************************************
 //***************************************************************************************
 //EXPANDABLELISTVIEW GENRE***************************************************************
         //obtener listas de generos
@@ -90,6 +94,22 @@ class HomeFragment : Fragment(), MoviesAdapter.OnClickListener {
         homeViewModel.setType("Upcoming")
 //***************************************************************************************
 
+    }
+
+    private fun setupSearch() {
+        binding.search.setOnQueryTextListener(object :SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+                if (p0 != null) {
+                    homeViewModel.setSearch(p0)
+                }
+                return false
+            }
+
+            override fun onQueryTextChange(p0: String?): Boolean {
+                return false
+            }
+
+        })
     }
 
     private fun setPlayingRecyclerView() {

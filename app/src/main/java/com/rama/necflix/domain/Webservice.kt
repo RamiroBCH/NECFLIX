@@ -55,4 +55,10 @@ interface Webservice {
         @Query("api_key") api_key: String,
         @Query("language") language: String
     ): topRated
+
+    @GET("search/movie")
+    suspend fun getSearchMulti(
+        @Query("api_key") api_key: String,
+        @Query("query") query: String
+    ): searchMulti
 }

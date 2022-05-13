@@ -51,6 +51,11 @@ class HomeViewModel @Inject constructor(private val repo: Repo) : ViewModel() {
     fun setType(typePass: String?){
         type.value = typePass
     }
+    
+    fun setSearch(searchText: String) {
+        type.value = searchText
+    }
+
     val getMoviesFromDB = type.distinctUntilChanged().switchMap { type ->
         liveData(Dispatchers.IO) {
             emit(Resource.Loading)
@@ -59,6 +64,7 @@ class HomeViewModel @Inject constructor(private val repo: Repo) : ViewModel() {
                     "Upcoming" -> emit(repo.getUpcomingMovies())
                     "Popular" -> emit(repo.getMoviesPopular())
                     "Top Rated" -> emit(repo.getMoviesTopRated())
+                    else -> emit(type?.let { repo.getSearchMulti(it) })
                 }
 
             } catch (e: Exception) {

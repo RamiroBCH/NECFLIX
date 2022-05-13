@@ -84,6 +84,15 @@ class DatasourceImpl @Inject constructor(val itemsDao: ItemsDao, val webservice:
         val moviesTopRatedListDB = itemsDao.getMoviesFromDB(type)
         return Resource.Success(moviesTopRatedListDB)
     }
+
+    override suspend fun getSearchMulti(search: String): Resource<List<resultsDB>> {
+        val moviesSearchMultiList = webservice.getSearchMulti(apikey , search).results
+        val lisConvert = mapConvert(moviesSearchMultiList, search)
+        insertDB(lisConvert)
+        val moviesSearchMulti = itemsDao.getMoviesFromDB(search)
+        return Resource.Success(moviesSearchMulti)
+    }
+
     //******************************************************************************************
     //funcion para insertar en room
     suspend fun insertDB(convert: List<resultsDB>) {

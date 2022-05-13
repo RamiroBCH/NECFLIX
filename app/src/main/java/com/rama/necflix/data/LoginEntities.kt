@@ -46,23 +46,23 @@ data class resultsDB(
     @ColumnInfo
     val adult: Boolean,
     @ColumnInfo
-    val backdrop_path: String,
+    val backdrop_path: String?,
     @ColumnInfo
     val genre_ids: Int,
     @ColumnInfo
-    val original_language: String,
+    val original_language: String?,
     @ColumnInfo
-    val original_title: String,
+    val original_title: String?,
     @ColumnInfo
-    val overview: String,
+    val overview: String?,
     @ColumnInfo
     val popularity: Double,
     @ColumnInfo
-    val poster_path: String,
+    val poster_path: String?,
     @ColumnInfo
-    val release_date: String,
+    val release_date: String?,
     @ColumnInfo
-    val title: String,
+    val title: String?,
     @ColumnInfo
     val video: Boolean,
     @ColumnInfo
