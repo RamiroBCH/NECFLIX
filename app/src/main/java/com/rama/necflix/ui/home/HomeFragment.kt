@@ -32,7 +32,7 @@ class HomeFragment : Fragment(), MoviesAdapter.OnClickListener {
     val args: HomeFragmentArgs by navArgs()
     private var genresDB: List<GenresDB> = emptyList()
     var map = HashMap<String, List<String>>()
-    var words :List<String> = emptyList()
+    var words: List<String> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,11 +47,11 @@ class HomeFragment : Fragment(), MoviesAdapter.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         //obtener datos de la cuenta ingresada
-        val primaryKey:String = args.primaryKey
+        val primaryKey: String = args.primaryKey
         //obtener el id de sesion de invitado
         val guestSessionId: String = args.sessionId
         //probar si se inicio sesion
-        if( primaryKey == "no" || guestSessionId == "no") {
+        if (primaryKey == "no" || guestSessionId == "no") {
             findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
         }
 //SEARCH SETUP***************************************************************************
@@ -73,17 +73,21 @@ class HomeFragment : Fragment(), MoviesAdapter.OnClickListener {
         //clicklistener de los items
         binding.genero.setOnChildClickListener { genero, view, groupPosition, childPosition, l ->
             //homeViewModel.setGenre(map[words[groupPosition]]?.get(childPosition).toString())
-            if (groupPosition == 1){
+            if (groupPosition == 1) {
                 homeViewModel.setType(map[words[groupPosition]]?.get(childPosition).toString())
-            }else{
-                Toast.makeText(context, map[words[groupPosition]]?.get(childPosition), Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(
+                    context,
+                    map[words[groupPosition]]?.get(childPosition),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
             true
         }
         //clicklistener del viewGroup que contiene los items
         var lastIndex = -1
         binding.genero.setOnGroupExpandListener {
-            if (lastIndex != -1 && lastIndex != it){
+            if (lastIndex != -1 && lastIndex != it) {
                 binding.genero.collapseGroup(lastIndex)
             }
             Log.d("tag", "onCreate: $it $lastIndex")
@@ -97,11 +101,9 @@ class HomeFragment : Fragment(), MoviesAdapter.OnClickListener {
     }
 
     private fun setupSearch() {
-        binding.search.setOnQueryTextListener(object :SearchView.OnQueryTextListener{
+        binding.search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
-                if (p0 != null) {
-                    homeViewModel.setSearch(p0)
-                }
+                homeViewModel.setType((p0!!).toString())
                 return false
             }
 
@@ -113,18 +115,30 @@ class HomeFragment : Fragment(), MoviesAdapter.OnClickListener {
     }
 
     private fun setPlayingRecyclerView() {
-        binding.recyclerNowplaying.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL, false)
-        binding.recyclerNowplaying.addItemDecoration(DividerItemDecoration(requireContext(),DividerItemDecoration.VERTICAL))
+        binding.recyclerNowplaying.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.recyclerNowplaying.addItemDecoration(
+            DividerItemDecoration(
+                requireContext(),
+                DividerItemDecoration.VERTICAL
+            )
+        )
     }
 
-    private fun setMoviesTvShowsRecyclerView(){
-        binding.recyclerMoviestvshows.layoutManager = GridLayoutManager(requireContext(),2,GridLayoutManager.VERTICAL,false)
-        binding.recyclerMoviestvshows.addItemDecoration(DividerItemDecoration(requireContext(),DividerItemDecoration.VERTICAL))
+    private fun setMoviesTvShowsRecyclerView() {
+        binding.recyclerMoviestvshows.layoutManager =
+            GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
+        binding.recyclerMoviestvshows.addItemDecoration(
+            DividerItemDecoration(
+                requireContext(),
+                DividerItemDecoration.VERTICAL
+            )
+        )
     }
 
     private fun getDataNowPlaying() {
         return homeViewModel.getNowPlaying.observe(viewLifecycleOwner, Observer { list ->
-            when(list){
+            when (list) {
                 is Resource.Loading -> {
                     Toast.makeText(
                         context, "Cargando", Toast.LENGTH_SHORT
@@ -133,20 +147,21 @@ class HomeFragment : Fragment(), MoviesAdapter.OnClickListener {
                 is Resource.Success -> {
                     countListNowPlaying = list.data.size
                     //pasar los datos nowplaying a nowPlayingAdapter
-                    binding.recyclerNowplaying.adapter = MoviesAdapter(requireContext(),list.data,this,"nowplaying")
+                    binding.recyclerNowplaying.adapter =
+                        MoviesAdapter(requireContext(), list.data, this, "nowplaying")
                     smoothScrolling(countListNowPlaying, binding)
                 }
                 is Resource.Failure -> {
-                    Toast.makeText(requireContext(), "Error ${list.exception}", Toast.LENGTH_LONG )
+                    Toast.makeText(requireContext(), "Error ${list.exception}", Toast.LENGTH_LONG)
                         .show()
                 }
             }
         })
     }
 
-    private fun getMoviesFromDB(){
+    private fun getMoviesFromDB() {
         return homeViewModel.getMoviesFromDB.observe(viewLifecycleOwner, Observer { result ->
-            when(result){
+            when (result) {
                 is Resource.Loading -> {
                     Toast.makeText(
                         context, "Cargando", Toast.LENGTH_SHORT
@@ -154,10 +169,11 @@ class HomeFragment : Fragment(), MoviesAdapter.OnClickListener {
                 }
                 is Resource.Success -> {
                     //pasar los datos al adapter
-                    binding.recyclerMoviestvshows.adapter = MoviesAdapter(requireContext(), result.data, this,"movies")
+                    binding.recyclerMoviestvshows.adapter =
+                        MoviesAdapter(requireContext(), result.data, this, "movies")
                 }
                 is Resource.Failure -> {
-                    Toast.makeText(requireContext(), "Error ${result.exception}", Toast.LENGTH_LONG )
+                    Toast.makeText(requireContext(), "Error ${result.exception}", Toast.LENGTH_LONG)
                         .show()
                 }
             }
@@ -165,14 +181,14 @@ class HomeFragment : Fragment(), MoviesAdapter.OnClickListener {
     }
 
     //Movimiento automatico
-    private fun smoothScrolling(count: Int,binding: FragmentHomeBinding) {
+    private fun smoothScrolling(count: Int, binding: FragmentHomeBinding) {
         homeViewModel.smoothScrolling(count, binding)
     }
 
     //obtener lista de generos
     private fun getGenreApi() {
-        return homeViewModel.getGenre.observe(viewLifecycleOwner, Observer {generos ->
-            when(generos){
+        return homeViewModel.getGenre.observe(viewLifecycleOwner, Observer { generos ->
+            when (generos) {
                 is Resource.Loading -> {
                     Toast.makeText(
                         context, "Cargando", Toast.LENGTH_SHORT
@@ -190,33 +206,38 @@ class HomeFragment : Fragment(), MoviesAdapter.OnClickListener {
                     setData(genresDB)
                 }
                 is Resource.Failure -> {
-                    Toast.makeText(requireContext(), "Error ${generos.exception}", Toast.LENGTH_LONG )
+                    Toast.makeText(
+                        requireContext(),
+                        "Error ${generos.exception}",
+                        Toast.LENGTH_LONG
+                    )
                         .show()
                 }
             }
         })
     }
+
     //pasar los datos al adapter del boton filtrar
     private fun setData(genresDB: List<GenresDB>) {
-        var list : List<String> = emptyList()
-        for(i in genresDB.indices){
+        var list: List<String> = emptyList()
+        for (i in genresDB.indices) {
             list = list + genresDB[i].name
             //Toast.makeText(context, list[i], Toast.LENGTH_SHORT).show()
         }
         map["Generos"] = list
-        map["Filter by"] = arrayListOf("Upcoming","Popular", "Top Rated")
-        words = listOf("Generos","Filter by")
+        map["Filter by"] = arrayListOf("Upcoming", "Popular", "Top Rated")
+        words = listOf("Generos", "Filter by")
         //pasar los datos al adapter
-        val adapterExpList = FilterByAdapter(genresDB,map,words)
+        val adapterExpList = FilterByAdapter(genresDB, map, words)
         binding.genero.setAdapter(adapterExpList)
     }
 
     override fun onNowPlayingClickListener(item: resultsDB, position: Int) {
-        Toast.makeText(context,item.id.toString(),Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, item.id.toString(), Toast.LENGTH_SHORT).show()
     }
 
     override fun onMoviesTvShowsClickListener(item: resultsDB, position: Int) {
-        Toast.makeText(context,"moviesviewholder",Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "moviesviewholder", Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroyView() {

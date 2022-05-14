@@ -7,8 +7,8 @@ import javax.inject.Inject
 
 class DatasourceImpl @Inject constructor(val itemsDao: ItemsDao, val webservice: Webservice) :
     Datasource {
-    val apikey = "f937e50a9ebe2079954b39dfed897360"
-    val language = "es-ES"
+    val api_key = "f937e50a9ebe2079954b39dfed897360"
+    val language = "es"
 
     override suspend fun insertAccountToRoom(account: Accounts) {
         itemsDao.insertAccount(account)
@@ -21,7 +21,7 @@ class DatasourceImpl @Inject constructor(val itemsDao: ItemsDao, val webservice:
     override suspend fun getGuestSessionId(): Resource<String> {
         var token: AccountInvitado? = itemsDao.getAccountInvitado(0)
         if (token == null) {
-            val sessionId: String = webservice.getGuestSessionId(apikey).guest_session_id
+            val sessionId: String = webservice.getGuestSessionId(api_key).guest_session_id
             itemsDao.insertAccountInvitado(AccountInvitado(0, sessionId))
             token = itemsDao.getAccountInvitado(0)!!
             return Resource.Success(token.token)
@@ -31,19 +31,19 @@ class DatasourceImpl @Inject constructor(val itemsDao: ItemsDao, val webservice:
     }
 
     override suspend fun getTokenNew(): Resource<String> {
-        return Resource.Success(webservice.getTokenNew(apikey).request_token)
+        return Resource.Success(webservice.getTokenNew(api_key).request_token)
     }
 
     override suspend fun createTokenActivated(getToken: Token): Resource<String> {
-        return Resource.Success(webservice.createTokenActivated(apikey, getToken).request_token)
+        return Resource.Success(webservice.createTokenActivated(api_key, getToken).request_token)
     }
 
     override suspend fun createSessionId(tokenValidate: String): Resource<String> {
-        return Resource.Success(webservice.createSessionId(apikey, tokenValidate).session_id)
+        return Resource.Success(webservice.createSessionId(api_key, tokenValidate).session_id)
     }
 
     override suspend fun getGenre(): Resource<List<GenresDB>> {
-        val list = webservice.getGenre(apikey)
+        val list = webservice.getGenre(api_key)
         for (i in list.genres.indices) {
             itemsDao.insertGenre(GenresDB(list.genres[i].id, list.genres[i].name))
         }
@@ -53,14 +53,14 @@ class DatasourceImpl @Inject constructor(val itemsDao: ItemsDao, val webservice:
 
     override suspend fun getNowPlaying(): Resource<List<resultsDB>> {
         val type = "nowplaying"
-        val nowPlayingList = webservice.getNowPlaying(apikey, language).results
+        val nowPlayingList = webservice.getNowPlaying(api_key, language).results
         val convert = mapConvert(nowPlayingList,type)
         return Resource.Success(convert)
     }
 
     override suspend fun getUpcomingMovies(): Resource<List<resultsDB>> {
         val type = "Upcoming"
-        val upcomingMoviesList = webservice.getUpcomingMovies(apikey, language).results
+        val upcomingMoviesList = webservice.getUpcomingMovies(api_key, language).results
         val convert = mapConvert(upcomingMoviesList,type)
         insertDB(convert)
         val upcomingMoviesListDB = itemsDao.getMoviesFromDB(type)
@@ -69,7 +69,7 @@ class DatasourceImpl @Inject constructor(val itemsDao: ItemsDao, val webservice:
 
     override suspend fun getMoviesPopular(): Resource<List<resultsDB>> {
         val type = "Popular"
-        val moviesPopularList = webservice.getMoviesPopular(apikey, language).results
+        val moviesPopularList = webservice.getMoviesPopular(api_key, language).results
         val listConvert = mapConvert(moviesPopularList,type)
         insertDB(listConvert)
         val moviesPopularListDB = itemsDao.getMoviesFromDB(type)
@@ -78,7 +78,7 @@ class DatasourceImpl @Inject constructor(val itemsDao: ItemsDao, val webservice:
 
     override suspend fun getMoviesTopRated(): Resource<List<resultsDB>> {
         val type = "Top Rated"
-        val moviesTopRatedList = webservice.getTopRated(apikey, language).results
+        val moviesTopRatedList = webservice.getTopRated(api_key, language).results
         val listConvert = mapConvert(moviesTopRatedList, type)
         insertDB(listConvert)
         val moviesTopRatedListDB = itemsDao.getMoviesFromDB(type)
@@ -86,7 +86,7 @@ class DatasourceImpl @Inject constructor(val itemsDao: ItemsDao, val webservice:
     }
 
     override suspend fun getSearchMulti(search: String): Resource<List<resultsDB>> {
-        val moviesSearchMultiList = webservice.getSearchMulti(apikey , search).results
+        val moviesSearchMultiList = webservice.getSearchMulti(api_key, language, search).results
         val lisConvert = mapConvert(moviesSearchMultiList, search)
         insertDB(lisConvert)
         val moviesSearchMulti = itemsDao.getMoviesFromDB(search)
