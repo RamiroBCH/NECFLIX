@@ -85,23 +85,57 @@ class DatasourceImpl @Inject constructor(val itemsDao: ItemsDao, val webservice:
         return Resource.Success(moviesTopRatedListDB)
     }
 
-    override suspend fun getSearchMulti(search: String): Resource<List<resultsDB>> {
-        val moviesSearchMultiList = webservice.getSearchMulti(api_key, language, search).results
-        val lisConvert = mapConvert(moviesSearchMultiList, search)
-        insertDB(lisConvert)
-        val moviesSearchMulti = itemsDao.getMoviesFromDB(search)
-        return Resource.Success(moviesSearchMulti)
+    override suspend fun getSearchMulti(search: String, mode: String): Resource<List<resultsDB>> {
+        if(mode == "movie"){
+            val moviesSearchMultiList = webservice.getSearchMulti(api_key, language, search).results
+            val lisConvert = mapConvert(moviesSearchMultiList, search)
+            insertDB(lisConvert)
+            val moviesSearchMultiListDB = itemsDao.getMoviesFromDB(search)
+            return Resource.Success(moviesSearchMultiListDB)
+        }else{
+            val tvShowsSearchMultiList = webservice.getSearchMulti(api_key, language, search).results
+            val listConvert = mapConvertTvShowsFromResult(tvShowsSearchMultiList, search)
+            insertTVShowsDB(listConvert)
+            val tvShowsSearchMultiListDB = itemsDao.getTvShowsFromDB(search)
+            return  Resource.Success(asNormalResultDB(tvShowsSearchMultiListDB))
+        }
+    }
+
+    override suspend fun getAiringTodayTvShow(): Resource<List<resultsDB>> {
+        val type = "AiringToday"
+        val tvShowsAiringToday = webservice.getAiringTodayTvShows(api_key, language).results
+        val listConvert = mapConvertTvShows(tvShowsAiringToday, type)
+        insertTVShowsDB(listConvert)
+        val tvShowsAiringTodayDB = itemsDao.getTvShowsFromDB(type)
+        return Resource.Success(asNormalResultDB(tvShowsAiringTodayDB))
+    }
+
+    override suspend fun getTvShowPopular(): Resource<List<resultsDB>> {
+        val type = "Tv Popular"
+        val tvShowsPopular = webservice.getPopularTvShows(api_key, language).results
+        val listConvert = mapConvertTvShows(tvShowsPopular, type)
+        insertTVShowsDB(listConvert)
+        val tvShowsPopularDB = itemsDao.getTvShowsFromDB(type)
+        return Resource.Success(asNormalResultDB(tvShowsPopularDB))
+    }
+
+    override suspend fun getTvShowTopRated(): Resource<List<resultsDB>> {
+        val type = "Tv Top Rated"
+        val tvShowsTopRated = webservice.getTopRatedTvShows(api_key, language).results
+        val listConvert = mapConvertTvShows(tvShowsTopRated, type)
+        insertTVShowsDB(listConvert)
+        val tvShowsTopRatedDB = itemsDao.getTvShowsFromDB(type)
+        return Resource.Success(asNormalResultDB(tvShowsTopRatedDB))
     }
 
     //******************************************************************************************
     //funcion para insertar en room
     suspend fun insertDB(convert: List<resultsDB>) {
-        for (i in convert.indices) {
+        for(i in convert.indices) {
             itemsDao.insertUpcomingMovie(
                 resultsDB(
                     convert[i].id,
                     convert[i].type,
-                    convert[i].adult,
                     convert[i].backdrop_path,
                     convert[i].genre_ids,
                     convert[i].original_language,
@@ -109,9 +143,27 @@ class DatasourceImpl @Inject constructor(val itemsDao: ItemsDao, val webservice:
                     convert[i].overview,
                     convert[i].popularity,
                     convert[i].poster_path,
-                    convert[i].release_date,
                     convert[i].title,
-                    convert[i].video,
+                    convert[i].vote_average,
+                    convert[i].vote_count
+                )
+            )
+        }
+    }
+    suspend fun insertTVShowsDB(convert: List<ResultTvShowsDB>){
+        for(i in convert.indices){
+            itemsDao.insertTvShows(
+                ResultTvShowsDB(
+                    convert[i].id,
+                    convert[i].type,
+                    convert[i].backdrop_path,
+                    convert[i].genre_ids,
+                    convert[i].original_language,
+                    convert[i].original_name,
+                    convert[i].overview,
+                    convert[i].popularity,
+                    convert[i].poster_path,
+                    convert[i].name,
                     convert[i].vote_average,
                     convert[i].vote_count
                 )
@@ -125,7 +177,6 @@ fun mapConvert(results: List<Result>, type: String): List<resultsDB> {
         resultsDB(
             it.id,
             type,
-            it.adult,
             it.backdrop_path,
             it.genre_ids[0],
             it.original_language,
@@ -133,12 +184,66 @@ fun mapConvert(results: List<Result>, type: String): List<resultsDB> {
             it.overview,
             it.popularity,
             it.poster_path,
-            it.release_date,
             it.title,
-            it.video,
             it.vote_average,
             it.vote_count
         )
     }
 }
+fun mapConvertTvShows(results: List<ResultTvShows>, type: String): List<ResultTvShowsDB> {
+    return results.map {
+        ResultTvShowsDB(
+            it.id,
+            type,
+            it.backdrop_path,
+            it.genre_ids[0],
+            it.original_language,
+            it.original_name,
+            it.overview,
+            it.popularity,
+            it.poster_path,
+            it.name,
+            it.vote_average,
+            it.vote_count
+        )
+    }
+}
+fun asNormalResultDB(results: List<ResultTvShowsDB>): List<resultsDB> {
+    return results.map {
+        resultsDB(
+            it.id,
+            it.type,
+            it.backdrop_path,
+            it.genre_ids,
+            it.original_language,
+            it.original_name,
+            it.overview,
+            it.popularity,
+            it.poster_path,
+            it.name,
+            it.vote_average,
+            it.vote_count
+        )
+    }
+}
+fun mapConvertTvShowsFromResult(results: List<Result>, type: String): List<ResultTvShowsDB> {
+    return results.map {
+        ResultTvShowsDB(
+            it.id,
+            type,
+            it.backdrop_path,
+            it.genre_ids[0],
+            it.original_language,
+            it.original_title,
+            it.overview,
+            it.popularity,
+            it.poster_path,
+            it.title,
+            it.vote_average,
+            it.vote_count
+        )
+    }
+}
+
+
 

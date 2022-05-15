@@ -33,6 +33,7 @@ class HomeFragment : Fragment(), MoviesAdapter.OnClickListener {
     private var genresDB: List<GenresDB> = emptyList()
     var map = HashMap<String, List<String>>()
     var words: List<String> = emptyList()
+    private var mode = "movie"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,6 +58,11 @@ class HomeFragment : Fragment(), MoviesAdapter.OnClickListener {
 //SEARCH SETUP***************************************************************************
         setupSearch()
 //***************************************************************************************
+//BUTTON MODE SETUP**********************************************************************
+        binding.btnModo.setOnClickListener {
+            Toast.makeText(context, "Modo oscuro", Toast.LENGTH_SHORT)
+        }
+//***************************************************************************************
 //RECYCLERVIEW NOWPLAYING****************************************************************
         //obtener los datos nowplaying
         setPlayingRecyclerView()
@@ -74,8 +80,17 @@ class HomeFragment : Fragment(), MoviesAdapter.OnClickListener {
         binding.genero.setOnChildClickListener { genero, view, groupPosition, childPosition, l ->
             //homeViewModel.setGenre(map[words[groupPosition]]?.get(childPosition).toString())
             if (groupPosition == 1) {
+                mode = "movie"
+                homeViewModel.setMode(mode)
                 homeViewModel.setType(map[words[groupPosition]]?.get(childPosition).toString())
-            } else {
+            }
+            else if(groupPosition == 2){
+                mode = "tv"
+                homeViewModel.setMode(mode)
+                homeViewModel.setType(map[words[groupPosition]]?.get(childPosition).toString())
+
+            }
+            else {
                 Toast.makeText(
                     context,
                     map[words[groupPosition]]?.get(childPosition),
@@ -99,6 +114,7 @@ class HomeFragment : Fragment(), MoviesAdapter.OnClickListener {
 //***************************************************************************************
 
     }
+
 
     private fun setupSearch() {
         binding.search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -224,9 +240,10 @@ class HomeFragment : Fragment(), MoviesAdapter.OnClickListener {
             list = list + genresDB[i].name
             //Toast.makeText(context, list[i], Toast.LENGTH_SHORT).show()
         }
-        map["Generos"] = list
-        map["Filter by"] = arrayListOf("Upcoming", "Popular", "Top Rated")
-        words = listOf("Generos", "Filter by")
+        map["Filtrar por Generos"] = list
+        map["Filtrar peliculas por:"] = arrayListOf("Upcoming", "Popular", "Top Rated")
+        map["Filtrar Tv Shows por:"] = arrayListOf("AiringToday", "Tv Popular", "Tv Top Rated")
+        words = listOf("Filtrar por Generos", "Filtrar peliculas por:", "Filtrar Tv Shows por:")
         //pasar los datos al adapter
         val adapterExpList = FilterByAdapter(genresDB, map, words)
         binding.genero.setAdapter(adapterExpList)

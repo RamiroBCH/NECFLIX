@@ -62,4 +62,22 @@ interface Webservice {
         @Query("language") language: String,
         @Query("query") query: String
     ): searchMulti
+
+    @GET("tv/airing_today")
+    suspend fun getAiringTodayTvShows(
+        @Query("api_key") api_key: String,
+        @Query("language") language: String
+    ): airingTodayTvShow
+
+    @GET("tv/popular")
+    suspend fun getPopularTvShows(
+        @Query("api_key") api_key: String,
+        @Query("language") language: String
+    ): popularTVShows
+
+    @GET("tv/top_rated")
+    suspend fun getTopRatedTvShows(
+        @Query("api_key") api_key: String,
+        @Query("language") language: String
+    ): topRatedTvShows
 }

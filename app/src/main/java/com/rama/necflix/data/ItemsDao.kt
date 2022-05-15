@@ -25,9 +25,15 @@ interface ItemsDao {
     @Query("SELECT * FROM GENRES")
     suspend fun getGenre(): List<GenresDB>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUpcomingMovie(resultsDB :resultsDB)
 
     @Query("SELECT * FROM RESULTSDB WHERE type == :type")
     suspend fun getMoviesFromDB(type: String): List<resultsDB>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTvShows(resultTvShowsDB: ResultTvShowsDB)
+
+    @Query("SELECT * FROM RESULTTVSHOWSDB WHERE type == :type")
+    suspend fun getTvShowsFromDB(type: String): List<ResultTvShowsDB>
 }

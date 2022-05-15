@@ -16,5 +16,8 @@ interface Repo {
     suspend fun getUpcomingMovies(): Resource<List<resultsDB>>
     suspend fun getMoviesPopular(): Resource<List<resultsDB>>
     suspend fun getMoviesTopRated(): Resource<List<resultsDB>>
-    suspend fun getSearchMulti(search: String): Resource<List<resultsDB>>
+    suspend fun getSearchMulti(search: String, mode: String): Resource<List<resultsDB>>
+    suspend fun getAiringTodayTvShow(): Resource<List<resultsDB>>
+    suspend fun getTvShowPopular(): Resource<List<resultsDB>>
+    suspend fun getTvShowTopRated(): Resource<List<resultsDB>>
 }

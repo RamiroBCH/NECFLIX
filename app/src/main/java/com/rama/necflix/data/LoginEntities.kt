@@ -44,8 +44,6 @@ data class resultsDB(
     @ColumnInfo
     val type: String,
     @ColumnInfo
-    val adult: Boolean,
-    @ColumnInfo
     val backdrop_path: String?,
     @ColumnInfo
     val genre_ids: Int,
@@ -60,11 +58,35 @@ data class resultsDB(
     @ColumnInfo
     val poster_path: String?,
     @ColumnInfo
-    val release_date: String?,
-    @ColumnInfo
     val title: String?,
     @ColumnInfo
-    val video: Boolean,
+    val vote_average: Double,
+    @ColumnInfo
+    val vote_count: Int
+)
+@Entity(tableName = "RESULTTVSHOWSDB")
+data class ResultTvShowsDB(
+    @PrimaryKey
+    @ColumnInfo
+    val id: Int,
+    @ColumnInfo
+    val type: String,
+    @ColumnInfo
+    val backdrop_path: String?,
+    @ColumnInfo
+    val genre_ids: Int,
+    @ColumnInfo
+    val original_language: String?,
+    @ColumnInfo
+    val original_name: String?,
+    @ColumnInfo
+    val overview: String?,
+    @ColumnInfo
+    val popularity: Double,
+    @ColumnInfo
+    val poster_path: String?,
+    @ColumnInfo
+    val name: String?,
     @ColumnInfo
     val vote_average: Double,
     @ColumnInfo
