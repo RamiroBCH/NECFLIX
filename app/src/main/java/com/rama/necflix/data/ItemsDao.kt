@@ -33,7 +33,26 @@ interface ItemsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTvShows(resultTvShowsDB: ResultTvShowsDB)
-
     @Query("SELECT * FROM RESULTTVSHOWSDB WHERE type == :type")
     suspend fun getTvShowsFromDB(type: String): List<ResultTvShowsDB>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertDetailsGenres(GenresDBMovieSelected: GenresDBMovieSelected)
+    @Query("SELECT * FROM GENRESLIST WHERE id == :id")
+    suspend fun getDetailsGenres(id: Int): List<GenresDBMovieSelected>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertDetailsVideos(VideosDBMovieSelected: VideosDBMovieSelected)
+    @Query("SELECT * FROM VIDEOS WHERE id == :id")
+    suspend fun getDetailsVideos(id: Int): List<VideosDBMovieSelected>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertDetailsPoster(PosterDBMovieSelected: PosterDBMovieSelected)
+    @Query("SELECT * FROM POSTER WHERE id == :id")
+    suspend fun getDetailsPoster(id: Int): List<PosterDBMovieSelected>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertMoviesDetailsDB(moviesDetailsDB: MoviesDetailsDB)
+    @Query("SELECT * FROM DETALLES WHERE id == :id")
+    suspend fun getMoviesDetailsDB(id: Int): MoviesDetailsDB
 }

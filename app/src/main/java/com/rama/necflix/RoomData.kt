@@ -5,8 +5,14 @@ import androidx.room.RoomDatabase
 import com.rama.necflix.data.*
 
 
-@Database(entities = [(Accounts::class),(AccountInvitado::class),(GenresDB::class),(resultsDB::class),(ResultTvShowsDB::class)], version = 13, exportSchema = false)
-abstract class RoomData: RoomDatabase() {
+@Database(
+    entities = [(Accounts::class), (AccountInvitado::class), (GenresDB::class),
+        (resultsDB::class), (ResultTvShowsDB::class), (GenresDBMovieSelected::class),
+        (VideosDBMovieSelected::class), (PosterDBMovieSelected::class), (MoviesDetailsDB::class)],
+    version = 15,
+    exportSchema = false
+)
+abstract class RoomData : RoomDatabase() {
 
     abstract fun itemsDao(): ItemsDao
 }

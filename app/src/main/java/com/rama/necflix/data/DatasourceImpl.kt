@@ -5,10 +5,11 @@ import com.rama.necflix.domain.Webservice
 import com.rama.necflix.vo.Resource
 import javax.inject.Inject
 
-class DatasourceImpl @Inject constructor(val itemsDao: ItemsDao, val webservice: Webservice) :
+class DatasourceImpl @Inject constructor(private val itemsDao: ItemsDao, private val webservice: Webservice) :
     Datasource {
-    val api_key = "f937e50a9ebe2079954b39dfed897360"
-    val language = "es"
+    private val apikey = "f937e50a9ebe2079954b39dfed897360"
+    private val language = "es"
+    private val append = arrayListOf("videos","images")
 
     override suspend fun insertAccountToRoom(account: Accounts) {
         itemsDao.insertAccount(account)
@@ -20,30 +21,30 @@ class DatasourceImpl @Inject constructor(val itemsDao: ItemsDao, val webservice:
 
     override suspend fun getGuestSessionId(): Resource<String> {
         var token: AccountInvitado? = itemsDao.getAccountInvitado(0)
-        if (token == null) {
-            val sessionId: String = webservice.getGuestSessionId(api_key).guest_session_id
+        return if (token == null) {
+            val sessionId: String = webservice.getGuestSessionId(apikey).guest_session_id
             itemsDao.insertAccountInvitado(AccountInvitado(0, sessionId))
             token = itemsDao.getAccountInvitado(0)!!
-            return Resource.Success(token.token)
+            Resource.Success(token.token)
         } else {
-            return Resource.Success(token.token)
+            Resource.Success(token.token)
         }
     }
 
     override suspend fun getTokenNew(): Resource<String> {
-        return Resource.Success(webservice.getTokenNew(api_key).request_token)
+        return Resource.Success(webservice.getTokenNew(apikey).request_token)
     }
 
     override suspend fun createTokenActivated(getToken: Token): Resource<String> {
-        return Resource.Success(webservice.createTokenActivated(api_key, getToken).request_token)
+        return Resource.Success(webservice.createTokenActivated(apikey, getToken).request_token)
     }
 
     override suspend fun createSessionId(tokenValidate: String): Resource<String> {
-        return Resource.Success(webservice.createSessionId(api_key, tokenValidate).session_id)
+        return Resource.Success(webservice.createSessionId(apikey, tokenValidate).session_id)
     }
 
     override suspend fun getGenre(): Resource<List<GenresDB>> {
-        val list = webservice.getGenre(api_key)
+        val list = webservice.getGenre(apikey)
         for (i in list.genres.indices) {
             itemsDao.insertGenre(GenresDB(list.genres[i].id, list.genres[i].name))
         }
@@ -53,14 +54,14 @@ class DatasourceImpl @Inject constructor(val itemsDao: ItemsDao, val webservice:
 
     override suspend fun getNowPlaying(): Resource<List<resultsDB>> {
         val type = "nowplaying"
-        val nowPlayingList = webservice.getNowPlaying(api_key, language).results
+        val nowPlayingList = webservice.getNowPlaying(apikey, language).results
         val convert = mapConvert(nowPlayingList,type)
         return Resource.Success(convert)
     }
 
     override suspend fun getUpcomingMovies(): Resource<List<resultsDB>> {
         val type = "Upcoming"
-        val upcomingMoviesList = webservice.getUpcomingMovies(api_key, language).results
+        val upcomingMoviesList = webservice.getUpcomingMovies(apikey, language).results
         val convert = mapConvert(upcomingMoviesList,type)
         insertDB(convert)
         val upcomingMoviesListDB = itemsDao.getMoviesFromDB(type)
@@ -69,7 +70,7 @@ class DatasourceImpl @Inject constructor(val itemsDao: ItemsDao, val webservice:
 
     override suspend fun getMoviesPopular(): Resource<List<resultsDB>> {
         val type = "Popular"
-        val moviesPopularList = webservice.getMoviesPopular(api_key, language).results
+        val moviesPopularList = webservice.getMoviesPopular(apikey, language).results
         val listConvert = mapConvert(moviesPopularList,type)
         insertDB(listConvert)
         val moviesPopularListDB = itemsDao.getMoviesFromDB(type)
@@ -78,7 +79,7 @@ class DatasourceImpl @Inject constructor(val itemsDao: ItemsDao, val webservice:
 
     override suspend fun getMoviesTopRated(): Resource<List<resultsDB>> {
         val type = "Top Rated"
-        val moviesTopRatedList = webservice.getTopRated(api_key, language).results
+        val moviesTopRatedList = webservice.getTopRated(apikey, language).results
         val listConvert = mapConvert(moviesTopRatedList, type)
         insertDB(listConvert)
         val moviesTopRatedListDB = itemsDao.getMoviesFromDB(type)
@@ -86,24 +87,24 @@ class DatasourceImpl @Inject constructor(val itemsDao: ItemsDao, val webservice:
     }
 
     override suspend fun getSearchMulti(search: String, mode: String): Resource<List<resultsDB>> {
-        if(mode == "movie"){
-            val moviesSearchMultiList = webservice.getSearchMulti(api_key, language, search).results
+        return if(mode == "movie"){
+            val moviesSearchMultiList = webservice.getSearchMulti(apikey, language, search).results
             val lisConvert = mapConvert(moviesSearchMultiList, search)
             insertDB(lisConvert)
             val moviesSearchMultiListDB = itemsDao.getMoviesFromDB(search)
-            return Resource.Success(moviesSearchMultiListDB)
+            Resource.Success(moviesSearchMultiListDB)
         }else{
-            val tvShowsSearchMultiList = webservice.getSearchMulti(api_key, language, search).results
+            val tvShowsSearchMultiList = webservice.getSearchMulti(apikey, language, search).results
             val listConvert = mapConvertTvShowsFromResult(tvShowsSearchMultiList, search)
             insertTVShowsDB(listConvert)
             val tvShowsSearchMultiListDB = itemsDao.getTvShowsFromDB(search)
-            return  Resource.Success(asNormalResultDB(tvShowsSearchMultiListDB))
+            Resource.Success(asNormalResultDB(tvShowsSearchMultiListDB))
         }
     }
 
     override suspend fun getAiringTodayTvShow(): Resource<List<resultsDB>> {
         val type = "AiringToday"
-        val tvShowsAiringToday = webservice.getAiringTodayTvShows(api_key, language).results
+        val tvShowsAiringToday = webservice.getAiringTodayTvShows(apikey, language).results
         val listConvert = mapConvertTvShows(tvShowsAiringToday, type)
         insertTVShowsDB(listConvert)
         val tvShowsAiringTodayDB = itemsDao.getTvShowsFromDB(type)
@@ -112,7 +113,7 @@ class DatasourceImpl @Inject constructor(val itemsDao: ItemsDao, val webservice:
 
     override suspend fun getTvShowPopular(): Resource<List<resultsDB>> {
         val type = "Tv Popular"
-        val tvShowsPopular = webservice.getPopularTvShows(api_key, language).results
+        val tvShowsPopular = webservice.getPopularTvShows(apikey, language).results
         val listConvert = mapConvertTvShows(tvShowsPopular, type)
         insertTVShowsDB(listConvert)
         val tvShowsPopularDB = itemsDao.getTvShowsFromDB(type)
@@ -121,16 +122,39 @@ class DatasourceImpl @Inject constructor(val itemsDao: ItemsDao, val webservice:
 
     override suspend fun getTvShowTopRated(): Resource<List<resultsDB>> {
         val type = "Tv Top Rated"
-        val tvShowsTopRated = webservice.getTopRatedTvShows(api_key, language).results
+        val tvShowsTopRated = webservice.getTopRatedTvShows(apikey, language).results
         val listConvert = mapConvertTvShows(tvShowsTopRated, type)
         insertTVShowsDB(listConvert)
         val tvShowsTopRatedDB = itemsDao.getTvShowsFromDB(type)
         return Resource.Success(asNormalResultDB(tvShowsTopRatedDB))
     }
 
+    override suspend fun getDetailsOfMovie(id: Int): Resource<normalDetailsOfMovie> {
+        val details = webservice.getMoviesDetails(id, apikey, language, append)
+        val generos = mapGenres(details.genres)
+        var posterUrl = emptyList<PosterDBMovieSelected>()
+        var videosUrl = emptyList<VideosDBMovieSelected>()
+        if(details.images != null){
+            posterUrl = mapImagesPoster(details.id, details.images.posters)
+            insertDetailsPoster(posterUrl)
+        }
+        if(details.videos != null){
+            videosUrl = mapVideos(details.id, details.videos.results)
+            insertDetailsMovie(videosUrl)
+        }
+        val detailsOfRest = convertDetails(details)
+        insertDetailsGenres(generos)
+        insertMoviesDetailsDB(detailsOfRest)
+        val genero = itemsDao.getDetailsGenres(id)
+        val posterUr = itemsDao.getDetailsPoster(id)
+        val videosUr = itemsDao.getDetailsVideos(id)
+        val detailsOfRes = itemsDao.getMoviesDetailsDB(id)
+        val detailsComplete = convertComplete(detailsOfRes, genero, posterUr, videosUr)
+        return Resource.Success(detailsComplete)
+    }
     //******************************************************************************************
-    //funcion para insertar en room
-    suspend fun insertDB(convert: List<resultsDB>) {
+    //funciones para insertar en room
+    private suspend fun insertDB(convert: List<resultsDB>) {
         for(i in convert.indices) {
             itemsDao.insertUpcomingMovie(
                 resultsDB(
@@ -150,7 +174,7 @@ class DatasourceImpl @Inject constructor(val itemsDao: ItemsDao, val webservice:
             )
         }
     }
-    suspend fun insertTVShowsDB(convert: List<ResultTvShowsDB>){
+    private suspend fun insertTVShowsDB(convert: List<ResultTvShowsDB>){
         for(i in convert.indices){
             itemsDao.insertTvShows(
                 ResultTvShowsDB(
@@ -170,9 +194,43 @@ class DatasourceImpl @Inject constructor(val itemsDao: ItemsDao, val webservice:
             )
         }
     }
+    private suspend fun insertDetailsGenres(list: List<GenresDBMovieSelected>){
+        for (i in list.indices){
+            itemsDao.insertDetailsGenres(
+                GenresDBMovieSelected(
+                    list[i].id,
+                    list[i].name
+                )
+            )
+        }
+    }
+
+    private suspend fun insertDetailsPoster(list: List<PosterDBMovieSelected>){
+        for (i in list.indices){
+            itemsDao.insertDetailsPoster(
+                PosterDBMovieSelected(
+                    list[i].id,
+                    list[i].name
+                )
+            )
+        }
+    }
+    private suspend fun insertDetailsMovie(list: List<VideosDBMovieSelected>){
+        for(i in list.indices){
+            itemsDao.insertDetailsVideos(
+                VideosDBMovieSelected(
+                    list[i].id,
+                    list[i].url
+                )
+            )
+        }
+    }
+    private suspend fun insertMoviesDetailsDB(details: MoviesDetailsDB){
+        itemsDao.insertMoviesDetailsDB(details)
+    }
 }
 
-fun mapConvert(results: List<Result>, type: String): List<resultsDB> {
+private fun mapConvert(results: List<Result>, type: String): List<resultsDB> {
     return results.map {
         resultsDB(
             it.id,
@@ -190,7 +248,7 @@ fun mapConvert(results: List<Result>, type: String): List<resultsDB> {
         )
     }
 }
-fun mapConvertTvShows(results: List<ResultTvShows>, type: String): List<ResultTvShowsDB> {
+private fun mapConvertTvShows(results: List<ResultTvShows>, type: String): List<ResultTvShowsDB> {
     return results.map {
         ResultTvShowsDB(
             it.id,
@@ -208,7 +266,7 @@ fun mapConvertTvShows(results: List<ResultTvShows>, type: String): List<ResultTv
         )
     }
 }
-fun asNormalResultDB(results: List<ResultTvShowsDB>): List<resultsDB> {
+private fun asNormalResultDB(results: List<ResultTvShowsDB>): List<resultsDB> {
     return results.map {
         resultsDB(
             it.id,
@@ -226,7 +284,7 @@ fun asNormalResultDB(results: List<ResultTvShowsDB>): List<resultsDB> {
         )
     }
 }
-fun mapConvertTvShowsFromResult(results: List<Result>, type: String): List<ResultTvShowsDB> {
+private fun mapConvertTvShowsFromResult(results: List<Result>, type: String): List<ResultTvShowsDB> {
     return results.map {
         ResultTvShowsDB(
             it.id,
@@ -244,6 +302,58 @@ fun mapConvertTvShowsFromResult(results: List<Result>, type: String): List<Resul
         )
     }
 }
+private fun mapGenres(generes: List<GenreX>): List<GenresDBMovieSelected>{
+    return generes.map {
+        GenresDBMovieSelected(
+            it.id,
+            it.name
+        )
 
-
+    }
+}
+private fun mapImagesPoster(id: Int, pster: List<Poster>): List<PosterDBMovieSelected>{
+    return pster.map {
+        PosterDBMovieSelected(
+            id,
+            it.file_path
+        )
+    }
+}
+private fun mapVideos(id: Int, vids: List<ResultDetails>): List<VideosDBMovieSelected>{
+    return vids.map {
+        VideosDBMovieSelected(
+            id,
+            it.key
+        )
+    }
+}
+private fun convertDetails(details: MoviesDetailsByID): MoviesDetailsDB{
+    return MoviesDetailsDB(
+        details.id,
+        details.backdrop_path,
+        details.original_language,
+        details.original_title,
+        details.overview,
+        details.poster_path,
+        details.release_date,
+        details.title,
+        details.vote_average
+    )
+}
+private fun convertComplete(detailsOfRes: MoviesDetailsDB, genero: List<GenresDBMovieSelected>, posterDBMovieSelectedUr: List<PosterDBMovieSelected>, videosDBMovieSelectedUr: List<VideosDBMovieSelected>): normalDetailsOfMovie {
+    return normalDetailsOfMovie(
+        detailsOfRes.id,
+        detailsOfRes.backdrop_path,
+        detailsOfRes.original_language,
+        detailsOfRes.original_title,
+        detailsOfRes.overview,
+        detailsOfRes.poster_path,
+        detailsOfRes.release_date,
+        detailsOfRes.title,
+        genero,
+        posterDBMovieSelectedUr,
+        videosDBMovieSelectedUr,
+        detailsOfRes.vote_average
+    )
+}
 

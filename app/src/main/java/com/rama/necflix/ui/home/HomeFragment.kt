@@ -250,11 +250,11 @@ class HomeFragment : Fragment(), MoviesAdapter.OnClickListener {
     }
 
     override fun onNowPlayingClickListener(item: resultsDB, position: Int) {
-        Toast.makeText(context, item.id.toString(), Toast.LENGTH_SHORT).show()
+        findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToDetailsFragment(item.id))
     }
 
     override fun onMoviesTvShowsClickListener(item: resultsDB, position: Int) {
-        Toast.makeText(context, "moviesviewholder", Toast.LENGTH_SHORT).show()
+        findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToDetailsFragment(item.id))
     }
 
     override fun onDestroyView() {

@@ -116,3 +116,56 @@ data class topRatedTvShows(
     val total_pages: Int,
     val total_results: Int
 )
+
+//data class peliculas detalles **************************************************************
+data class MoviesDetailsByID(
+    val id: Int,
+    val backdrop_path: String,
+    val genres: List<GenreX>,
+    val images: Images?,
+    val original_language: String,
+    val original_title: String,
+    val overview: String,
+    val poster_path: String,
+    val release_date: String,
+    val title: String,
+    val videos: Videos?,
+    val vote_average: Double
+)
+
+data class Images(
+    val posters: List<Poster>
+)
+
+data class Poster(
+    val file_path: String
+)
+
+data class Videos(
+    val results: List<ResultDetails>
+)
+
+data class ResultDetails(
+    val id: String,
+    val key: String,
+    val name: String,
+    val official: Boolean,
+    val published_at: String,
+    val site: String,
+    val size: Int,
+    val type: String
+)
+data class normalDetailsOfMovie(
+    val id: Int,
+    val backdrop_path: String,
+    val original_language: String,
+    val original_title: String,
+    val overview: String,
+    val poster_path: String,
+    val release_date: String,
+    val title: String,
+    val GenresDBMovieSelected: List<GenresDBMovieSelected>,
+    val PosterDBMovieSelected: List<PosterDBMovieSelected>,
+    val VideosDBMovieSelected: List<VideosDBMovieSelected>,
+    val vote_average: Double
+)

@@ -1,10 +1,7 @@
 package com.rama.necflix.domain
 
 import com.rama.necflix.data.*
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface Webservice {
     @GET("authentication/token/new")
@@ -80,4 +77,12 @@ interface Webservice {
         @Query("api_key") api_key: String,
         @Query("language") language: String
     ): topRatedTvShows
+
+    @GET("movie/{movie_id}")
+    suspend fun getMoviesDetails(
+        @Path("movie_id") movie_id: Int,
+        @Query("api_key") api_key: String,
+        @Query("language") language: String,
+        @Query("append_to_response") append_to_response: List<String>
+    ): MoviesDetailsByID
 }

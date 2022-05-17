@@ -84,7 +84,6 @@ class LoginFragment : Fragment(), AccountsImagesAdapter.OnPhotoClickListener {
                         context, sessionId, Toast.LENGTH_SHORT
                     ).show()
                     //navega home como invitado
-
                     findNavController()
                         .navigate(LoginFragmentDirections
                             .actionLoginFragmentToHomeFragment("0",sessionId))

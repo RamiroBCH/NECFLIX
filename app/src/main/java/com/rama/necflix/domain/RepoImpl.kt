@@ -65,4 +65,8 @@ class RepoImpl @Inject constructor(private val datasource: Datasource): Repo {
         return datasource.getTvShowTopRated()
     }
 
+    override suspend fun getDetailsOfMovie(id: Int): Resource<normalDetailsOfMovie> {
+        return datasource.getDetailsOfMovie(id)
+    }
+
 }

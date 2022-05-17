@@ -60,22 +60,21 @@
         <ExpandableListView
             android:id="@+id/genero"
             android:layout_width="match_parent"
-            android:nestedScrollingEnabled="true"
             android:layout_height="120dp"
             android:divider="#0000FF"
-            android:dividerHeight="2dp" />
+            android:dividerHeight="2dp"
+            android:nestedScrollingEnabled="true" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_nowplaying"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_nowplaying"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
 
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_moviestvshows"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_moviestvshows"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

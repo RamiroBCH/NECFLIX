@@ -92,3 +92,50 @@ data class ResultTvShowsDB(
     @ColumnInfo
     val vote_count: Int
 )
+@Entity(tableName = "GENRESLIST")
+data class GenresDBMovieSelected(
+    @PrimaryKey
+    @ColumnInfo
+    val id: Int,
+    @ColumnInfo
+    val name:String
+)
+@Entity(tableName = "VIDEOS")
+data class VideosDBMovieSelected(
+    @PrimaryKey
+    @ColumnInfo
+    val id: Int,
+    @ColumnInfo
+    val url:String
+)
+@Entity(tableName = "POSTER")
+data class PosterDBMovieSelected(
+    @PrimaryKey
+    @ColumnInfo
+    val id: Int,
+    @ColumnInfo
+    val name:String
+)
+@Entity(tableName = "DETALLES")
+data class MoviesDetailsDB(
+    @PrimaryKey
+    @ColumnInfo
+    val id: Int,
+    @ColumnInfo
+    val backdrop_path: String,
+    @ColumnInfo
+    val original_language: String,
+    @ColumnInfo
+    val original_title: String,
+    @ColumnInfo
+    val overview: String,
+    @ColumnInfo
+    val poster_path: String,
+    @ColumnInfo
+    val release_date: String,
+    @ColumnInfo
+    val title: String,
+    @ColumnInfo
+    val vote_average: Double,
+)
+
