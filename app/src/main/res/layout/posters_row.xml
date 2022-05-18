@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:background="@color/backgroudFriendly"
+    android:orientation="vertical"
+    android:padding="4dp"
+    xmlns:tools="http://schemas.android.com/tools">
+    <ImageView
+        android:id="@+id/posterimg"
+        android:layout_width="180dp"
+        android:layout_height="240dp"
+        tools:src="@drawable/ic_baseline_ads_click_24"/>
+    <TextView
+        android:id="@+id/idposter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
+
+</LinearLayout>

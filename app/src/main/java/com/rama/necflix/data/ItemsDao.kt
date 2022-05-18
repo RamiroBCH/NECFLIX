@@ -43,13 +43,13 @@ interface ItemsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDetailsVideos(VideosDBMovieSelected: VideosDBMovieSelected)
-    @Query("SELECT * FROM VIDEOS WHERE id == :id")
-    suspend fun getDetailsVideos(id: Int): List<VideosDBMovieSelected>
+    @Query("SELECT * FROM VIDEOS WHERE name == :title")
+    suspend fun getDetailsVideos(title: String): List<VideosDBMovieSelected>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDetailsPoster(PosterDBMovieSelected: PosterDBMovieSelected)
-    @Query("SELECT * FROM POSTER WHERE id == :id")
-    suspend fun getDetailsPoster(id: Int): List<PosterDBMovieSelected>
+    @Query("SELECT * FROM POSTER WHERE name == :title")
+    suspend fun getDetailsPoster(title: String): List<PosterDBMovieSelected>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMoviesDetailsDB(moviesDetailsDB: MoviesDetailsDB)

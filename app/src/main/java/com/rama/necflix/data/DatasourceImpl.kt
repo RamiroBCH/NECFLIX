@@ -9,7 +9,7 @@ class DatasourceImpl @Inject constructor(private val itemsDao: ItemsDao, private
     Datasource {
     private val apikey = "f937e50a9ebe2079954b39dfed897360"
     private val language = "es"
-    private val append = arrayListOf("videos","images")
+    private val append = "videos,images"
 
     override suspend fun insertAccountToRoom(account: Accounts) {
         itemsDao.insertAccount(account)
@@ -132,22 +132,22 @@ class DatasourceImpl @Inject constructor(private val itemsDao: ItemsDao, private
     override suspend fun getDetailsOfMovie(id: Int): Resource<normalDetailsOfMovie> {
         val details = webservice.getMoviesDetails(id, apikey, language, append)
         val generos = mapGenres(details.genres)
-        var posterUrl = emptyList<PosterDBMovieSelected>()
-        var videosUrl = emptyList<VideosDBMovieSelected>()
+        val posterUrl: List<PosterDBMovieSelected>
+        val videosUrl: List<VideosDBMovieSelected>
         if(details.images != null){
-            posterUrl = mapImagesPoster(details.id, details.images.posters)
+            posterUrl = mapImagesPoster(details.title, details.images.posters)
             insertDetailsPoster(posterUrl)
         }
         if(details.videos != null){
-            videosUrl = mapVideos(details.id, details.videos.results)
+            videosUrl = mapVideos(details.title, details.videos.results)
             insertDetailsMovie(videosUrl)
         }
         val detailsOfRest = convertDetails(details)
         insertDetailsGenres(generos)
         insertMoviesDetailsDB(detailsOfRest)
         val genero = itemsDao.getDetailsGenres(id)
-        val posterUr = itemsDao.getDetailsPoster(id)
-        val videosUr = itemsDao.getDetailsVideos(id)
+        val posterUr = itemsDao.getDetailsPoster(details.title)
+        val videosUr = itemsDao.getDetailsVideos(details.title)
         val detailsOfRes = itemsDao.getMoviesDetailsDB(id)
         val detailsComplete = convertComplete(detailsOfRes, genero, posterUr, videosUr)
         return Resource.Success(detailsComplete)
@@ -210,7 +210,8 @@ class DatasourceImpl @Inject constructor(private val itemsDao: ItemsDao, private
             itemsDao.insertDetailsPoster(
                 PosterDBMovieSelected(
                     list[i].id,
-                    list[i].name
+                    list[i].name,
+                    list[i].url
                 )
             )
         }
@@ -220,6 +221,7 @@ class DatasourceImpl @Inject constructor(private val itemsDao: ItemsDao, private
             itemsDao.insertDetailsVideos(
                 VideosDBMovieSelected(
                     list[i].id,
+                    list[i].name,
                     list[i].url
                 )
             )
@@ -311,18 +313,20 @@ private fun mapGenres(generes: List<GenreX>): List<GenresDBMovieSelected>{
 
     }
 }
-private fun mapImagesPoster(id: Int, pster: List<Poster>): List<PosterDBMovieSelected>{
+private fun mapImagesPoster(title: String, pster: List<Poster>): List<PosterDBMovieSelected>{
     return pster.map {
         PosterDBMovieSelected(
-            id,
+            null,
+            title,
             it.file_path
         )
     }
 }
-private fun mapVideos(id: Int, vids: List<ResultDetails>): List<VideosDBMovieSelected>{
+private fun mapVideos(title: String, vids: List<ResultDetails>): List<VideosDBMovieSelected>{
     return vids.map {
         VideosDBMovieSelected(
-            id,
+            null,
+            title,
             it.key
         )
     }

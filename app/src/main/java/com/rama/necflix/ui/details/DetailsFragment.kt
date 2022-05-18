@@ -9,13 +9,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.rama.necflix.data.PosterDBMovieSelected
 import com.rama.necflix.data.normalDetailsOfMovie
 import com.rama.necflix.databinding.FragmentDetailsBinding
 import com.rama.necflix.vo.Resource
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class DetailsFragment : Fragment() {
+class DetailsFragment : Fragment(), DetailsAdapterMovies.OnMovieDataClickListener {
 
     private val detailsVM by viewModels<DetailsVM>()
     private var _binding: FragmentDetailsBinding? = null
@@ -36,7 +39,20 @@ class DetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val id = args.id
+        setupRecyclerPosters()
         getDetails(id)
+
+    }
+
+    private fun setupRecyclerPosters() {
+        binding.recyclerPosters.layoutManager = LinearLayoutManager(
+            requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.recyclerPosters.addItemDecoration(
+            DividerItemDecoration(
+                requireContext(),
+                DividerItemDecoration.VERTICAL
+            )
+        )
     }
 
     private fun getDetails(id: Int) {
@@ -62,6 +78,8 @@ class DetailsFragment : Fragment() {
                     }
                     binding.origTitle.text = details.original_title
                     binding.releasedate.text = details.release_date
+                    binding.recyclerPosters.adapter = DetailsAdapterMovies(requireContext(),
+                        details.PosterDBMovieSelected, emptyList(),"posters",this)
                 }
                 is Resource.Failure -> {
                     Toast.makeText(requireContext(), "Error ${result.exception}", Toast.LENGTH_LONG)
@@ -75,5 +93,15 @@ class DetailsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onPosterClickListener(item: PosterDBMovieSelected, position: Int) {
+        Toast.makeText(requireContext(), "posterClick", Toast.LENGTH_LONG)
+            .show()
+    }
+
+    override fun onVideoClickListener() {
+        Toast.makeText(requireContext(), "wtf", Toast.LENGTH_LONG)
+            .show()
     }
 }

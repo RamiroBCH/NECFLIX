@@ -102,23 +102,27 @@ data class GenresDBMovieSelected(
 )
 @Entity(tableName = "VIDEOS")
 data class VideosDBMovieSelected(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo
-    val id: Int,
+    val id: Int?,
+    @ColumnInfo
+    val name: String,
     @ColumnInfo
     val url:String
 )
 @Entity(tableName = "POSTER")
 data class PosterDBMovieSelected(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo
-    val id: Int,
+    val id: Int?,
     @ColumnInfo
-    val name:String
+    val name:String,
+    @ColumnInfo
+    val url:String
 )
 @Entity(tableName = "DETALLES")
 data class MoviesDetailsDB(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo
     val id: Int,
     @ColumnInfo

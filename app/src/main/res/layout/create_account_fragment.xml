@@ -55,11 +55,12 @@
 
     <Button
         android:id="@+id/btn_create_account"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
         android:backgroundTint="@color/backgroudFriendlyBoton"
         android:textColor="@color/backgroudFriendlyText"
-        android:visibility="gone"
+        android:visibility="visible"
         android:text="@string/crear_cuenta" />
 
 </LinearLayout>

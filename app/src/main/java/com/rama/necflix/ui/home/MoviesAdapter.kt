@@ -2,13 +2,11 @@ package com.rama.necflix.ui.home
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.rama.necflix.data.resultsDB
-import com.rama.necflix.data.topRated
 import com.rama.necflix.databinding.ItemRecyclerNowPlayingBinding
 import com.rama.necflix.databinding.MoviesAndTvshowsRowBinding
 import com.rama.necflix.ui.BaseViewHolder
