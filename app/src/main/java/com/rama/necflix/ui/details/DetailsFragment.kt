@@ -12,6 +12,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.rama.necflix.data.PosterDBMovieSelected
+import com.rama.necflix.data.VideosDBMovieSelected
 import com.rama.necflix.data.normalDetailsOfMovie
 import com.rama.necflix.databinding.FragmentDetailsBinding
 import com.rama.necflix.vo.Resource
@@ -40,17 +41,30 @@ class DetailsFragment : Fragment(), DetailsAdapterMovies.OnMovieDataClickListene
         super.onViewCreated(view, savedInstanceState)
         val id = args.id
         setupRecyclerPosters()
+        setupRecyclerVideos()
         getDetails(id)
 
     }
 
     private fun setupRecyclerPosters() {
         binding.recyclerPosters.layoutManager = LinearLayoutManager(
-            requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            requireContext(), LinearLayoutManager.HORIZONTAL, false
+        )
         binding.recyclerPosters.addItemDecoration(
             DividerItemDecoration(
                 requireContext(),
                 DividerItemDecoration.VERTICAL
+            )
+        )
+    }
+    private fun setupRecyclerVideos(){
+        binding.recyclerVideos.layoutManager = LinearLayoutManager(
+            requireContext(), LinearLayoutManager.VERTICAL, false
+        )
+        binding.recyclerVideos.addItemDecoration(
+            DividerItemDecoration(
+                requireContext(),
+                DividerItemDecoration.HORIZONTAL
             )
         )
     }
@@ -80,6 +94,8 @@ class DetailsFragment : Fragment(), DetailsAdapterMovies.OnMovieDataClickListene
                     binding.releasedate.text = details.release_date
                     binding.recyclerPosters.adapter = DetailsAdapterMovies(requireContext(),
                         details.PosterDBMovieSelected, emptyList(),"posters",this)
+                    binding.recyclerVideos.adapter = DetailsAdapterMovies(requireContext(),
+                    emptyList(), details.VideosDBMovieSelected, "videos", this)
                 }
                 is Resource.Failure -> {
                     Toast.makeText(requireContext(), "Error ${result.exception}", Toast.LENGTH_LONG)
@@ -100,7 +116,7 @@ class DetailsFragment : Fragment(), DetailsAdapterMovies.OnMovieDataClickListene
             .show()
     }
 
-    override fun onVideoClickListener() {
+    override fun onVideoClickListener(item: VideosDBMovieSelected, position: Int) {
         Toast.makeText(requireContext(), "wtf", Toast.LENGTH_LONG)
             .show()
     }

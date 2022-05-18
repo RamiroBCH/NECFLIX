@@ -1,7 +1,7 @@
 package com.rama.necflix.di
 
-import com.rama.necflix.data.DatasourceLocalImpl
-import com.rama.necflix.domain.DatasourceLocal
+import com.rama.necflix.data.DatasourceNetworkImpl
+import com.rama.necflix.network.DatasourceNetwork
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -10,9 +10,9 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class DatasourceModule {
+abstract class DatasourceNetworkModule {
 
     @Binds
     @Singleton
-    abstract fun bindDatasource(datasourceImpl: DatasourceLocalImpl): DatasourceLocal
+    abstract fun bindDatasourceNetwork(datasourceNetworkImpl: DatasourceNetworkImpl): DatasourceNetwork
 }

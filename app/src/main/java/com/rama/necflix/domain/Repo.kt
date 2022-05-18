@@ -20,5 +20,7 @@ interface Repo {
     suspend fun getAiringTodayTvShow(): Resource<List<resultsDB>>
     suspend fun getTvShowPopular(): Resource<List<resultsDB>>
     suspend fun getTvShowTopRated(): Resource<List<resultsDB>>
-    suspend fun getDetailsOfMovie(id: Int): Resource<normalDetailsOfMovie>
+    suspend fun getDetailsOfMovie(id: Int, title: String): Resource<normalDetailsOfMovie>
+    suspend fun getMovieInformationById(id: Int): resultsDB
+    suspend fun updateAll()
 }

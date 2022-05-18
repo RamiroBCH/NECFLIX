@@ -4,7 +4,7 @@ import com.rama.necflix.data.*
 import com.rama.necflix.vo.Resource
 
 
-interface Datasource {
+interface DatasourceLocal {
     suspend fun insertAccountToRoom(account: Accounts)
     suspend fun getAccountsFromDatabase(): Resource<List<Accounts>>
     suspend fun getGuestSessionId(): Resource<String>
@@ -20,5 +20,6 @@ interface Datasource {
     suspend fun getAiringTodayTvShow(): Resource<List<resultsDB>>
     suspend fun getTvShowPopular(): Resource<List<resultsDB>>
     suspend fun getTvShowTopRated(): Resource<List<resultsDB>>
-    suspend fun getDetailsOfMovie(id: Int): Resource<normalDetailsOfMovie>
+    suspend fun getDetailsOfMovie(id: Int, title: String): Resource<normalDetailsOfMovie>
+    suspend fun getMovieInformationById(id: Int): resultsDB
 }

@@ -31,6 +31,9 @@ interface ItemsDao {
     @Query("SELECT * FROM RESULTSDB WHERE type == :type")
     suspend fun getMoviesFromDB(type: String): List<resultsDB>
 
+    @Query("SELECT * FROM RESULTSDB WHERE id == :id")
+    suspend fun getMovieInformationById(id: Int): resultsDB
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTvShows(resultTvShowsDB: ResultTvShowsDB)
     @Query("SELECT * FROM RESULTTVSHOWSDB WHERE type == :type")

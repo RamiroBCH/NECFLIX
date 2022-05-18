@@ -136,5 +136,11 @@
             android:textSize="16sp"
             android:textColor="@color/white"
             tools:text="@string/app_name"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_videos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"/>
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

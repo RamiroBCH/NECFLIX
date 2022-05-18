@@ -1,19 +1,32 @@
 package com.rama.necflix.ui.home
 
+import android.widget.Toast
 import androidx.core.view.get
 import androidx.lifecycle.*
 import com.rama.necflix.databinding.FragmentHomeBinding
 import com.rama.necflix.domain.Repo
 import com.rama.necflix.vo.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val repo: Repo) : ViewModel() {
+    init {
+        updateData()
+    }
+
+    private fun updateData() {
+        viewModelScope.launch {
+            try {
+                repo.updateAll()
+            }catch (e: Exception){
+                Resource.Failure(e)
+            }
+        }
+
+    }
 
     fun smoothScrolling(count: Int, binding: FragmentHomeBinding) {
         viewModelScope.launch {

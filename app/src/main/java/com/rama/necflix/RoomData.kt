@@ -9,7 +9,7 @@ import com.rama.necflix.data.*
     entities = [(Accounts::class), (AccountInvitado::class), (GenresDB::class),
         (resultsDB::class), (ResultTvShowsDB::class), (GenresDBMovieSelected::class),
         (VideosDBMovieSelected::class), (PosterDBMovieSelected::class), (MoviesDetailsDB::class)],
-    version = 16,
+    version = 17,
     exportSchema = false
 )
 abstract class RoomData : RoomDatabase() {

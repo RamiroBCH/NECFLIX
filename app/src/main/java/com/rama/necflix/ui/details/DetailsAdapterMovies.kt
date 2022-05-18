@@ -8,7 +8,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.rama.necflix.data.PosterDBMovieSelected
 import com.rama.necflix.data.VideosDBMovieSelected
-import com.rama.necflix.databinding.PostersRowBinding
+import com.rama.necflix.databinding.DetailsPostersRowBinding
+import com.rama.necflix.databinding.DetailsVideosRowBinding
 import com.rama.necflix.ui.BaseViewHolder
 
 class DetailsAdapterMovies(
@@ -20,23 +21,28 @@ class DetailsAdapterMovies(
 ): RecyclerView.Adapter<BaseViewHolder<*>>() {
     interface OnMovieDataClickListener{
         fun onPosterClickListener(item: PosterDBMovieSelected, position: Int)
-        fun onVideoClickListener()
+        fun onVideoClickListener(item: VideosDBMovieSelected, position: Int)
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
         val baseType = "posters"
-        val postersBinding = PostersRowBinding.inflate(
-            LayoutInflater.from(context),parent,false)
+        val postersBinding = DetailsPostersRowBinding.inflate(
+            LayoutInflater.from(context),parent,false
+        )
+        val videosBinding = DetailsVideosRowBinding.inflate(
+            LayoutInflater.from(context),parent, false
+        )
 
         if(type == baseType){
             return PosterViewHolder(postersBinding)
         }else{
-            return PosterViewHolder(postersBinding)
+            return VideosViewHolder(videosBinding)
         }
     }
 
     override fun onBindViewHolder(holder: BaseViewHolder<*>, position: Int) {
         when(holder){
             is PosterViewHolder -> holder.bind(posters[position], position)
+            is VideosViewHolder -> holder.bind(videos[position], position)
         }
     }
 
@@ -48,7 +54,7 @@ class DetailsAdapterMovies(
         }
     }
 
-    inner class PosterViewHolder(val binding: PostersRowBinding):
+    inner class PosterViewHolder(val binding: DetailsPostersRowBinding):
             BaseViewHolder<PosterDBMovieSelected>(binding.root){
         override fun bind(item: PosterDBMovieSelected, position: Int) = with(binding) {
             Glide.with(context)
@@ -61,4 +67,13 @@ class DetailsAdapterMovies(
         }
 
     }
+    inner class VideosViewHolder(val bindingTwo: DetailsVideosRowBinding):
+            BaseViewHolder<VideosDBMovieSelected>(bindingTwo.root){
+        override fun bind(item: VideosDBMovieSelected, position: Int) = with(bindingTwo) {
+            linkUrl.text = ("https://www.youtube.com/watch?v=" + item.url)
+            itemView.setOnClickListener { clickListener.onVideoClickListener(item, position) }
+        }
+
+    }
+
 }
