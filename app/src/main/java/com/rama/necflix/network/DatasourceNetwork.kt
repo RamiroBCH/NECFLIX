@@ -10,4 +10,5 @@ interface DatasourceNetwork {
     suspend fun updateTvShowPopular()
     suspend fun updateTvShowTopRated()
     suspend fun updateDetailsOfMovie(id: Int)
+    suspend fun updateGenre()
 }

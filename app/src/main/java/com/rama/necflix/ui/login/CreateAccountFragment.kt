@@ -149,7 +149,8 @@ class CreateAccountFragment : Fragment(), CreateAccountAdapter.OnDrawableClickLi
             binding.password.text.toString(),
             tokenActivado,
             sessionId,
-            image
+            image,
+            true
         )
     }
     //ponemos el objeto creado en room

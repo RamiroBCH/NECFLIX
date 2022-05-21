@@ -47,7 +47,6 @@ class LoginFragment : Fragment(), AccountsImagesAdapter.OnPhotoClickListener {
                 //mostrar usuarios y pedir contraseña
                 goneOrVisible()
                 Toast.makeText(context,"Ingresar contraseña", Toast.LENGTH_SHORT).show()
-
             }
         }
         binding.btnInitSession.setOnClickListener {
@@ -63,34 +62,29 @@ class LoginFragment : Fragment(), AccountsImagesAdapter.OnPhotoClickListener {
             //aqui hay que crear una cuenta de invitado
             getGuestSessionId()
         }
-
     }
-
 
     private fun getGuestSessionId() {
         viewModel.getGuestSessionId.observe(viewLifecycleOwner, Observer { result ->
             when(result){
                 is Resource.Loading -> {
                     Toast.makeText(
-                        context, "Cargando", Toast.LENGTH_SHORT
-                    ).show()
+                        context, "Cargando", Toast.LENGTH_SHORT).show()
                 }
                 is Resource.Success -> {
                     sessionId = result.data
                     Toast.makeText(
-                        context, "Sesion de invitado creada", Toast.LENGTH_SHORT
-                    ).show()
+                        context, "Sesion de invitado creada", Toast.LENGTH_SHORT).show()
                     Toast.makeText(
-                        context, sessionId, Toast.LENGTH_SHORT
-                    ).show()
+                        context, sessionId, Toast.LENGTH_SHORT).show()
                     //navega home como invitado
                     findNavController()
                         .navigate(LoginFragmentDirections
                             .actionLoginFragmentToHomeFragment("0",sessionId))
                 }
                 is Resource.Failure -> {
-                    Toast.makeText(requireContext(), "Error ${result.exception}", Toast.LENGTH_LONG ).show()
-
+                    Toast.makeText(context,
+                        "Error ${result.exception}", Toast.LENGTH_LONG ).show()
                 }
             }
         })
@@ -100,20 +94,21 @@ class LoginFragment : Fragment(), AccountsImagesAdapter.OnPhotoClickListener {
         viewModel.accounts.observe(viewLifecycleOwner, androidx.lifecycle.Observer { result ->
             when(result){
                 is Resource.Loading -> {
-                    Toast.makeText(requireContext(),"Obteniendo datos", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(requireContext(),"Obteniendo datos", Toast.LENGTH_SHORT).show()
                 }
                 is Resource.Success -> {
                     accounts = result.data
-                    Toast.makeText(requireContext(),"Datos obtenidos", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(requireContext(),"Datos obtenidos", Toast.LENGTH_SHORT).show()
                 }
                 is Resource.Failure -> {
-                    Toast.makeText(requireContext(), "Error ${result.exception}", Toast.LENGTH_SHORT ).show()
+                    Toast.makeText(requireContext(), "Error: ${result.exception}", Toast.LENGTH_SHORT ).show()
                 }
             }
         })
     }
 
     private fun goneOrVisible(){
+        binding.logoNecflix.visibility = View.GONE
         binding.subscribe.visibility = View.GONE
         binding.yesNo.visibility = View.GONE
         binding.invitado.visibility = View.GONE
@@ -153,8 +148,5 @@ class LoginFragment : Fragment(), AccountsImagesAdapter.OnPhotoClickListener {
         binding.btnInitSession.visibility = View.GONE
         _binding = null
     }
-
-
-
 }
 

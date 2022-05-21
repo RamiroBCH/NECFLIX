@@ -21,11 +21,10 @@ class HomeViewModel @Inject constructor(private val repo: Repo) : ViewModel() {
         viewModelScope.launch {
             try {
                 repo.updateAll()
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 Resource.Failure(e)
             }
         }
-
     }
 
     fun smoothScrolling(count: Int, binding: FragmentHomeBinding) {
@@ -59,7 +58,14 @@ class HomeViewModel @Inject constructor(private val repo: Repo) : ViewModel() {
             emit(Resource.Failure(e))
         }
     }
-
+    val getActiveAcc = liveData(Dispatchers.IO) {
+        emit(Resource.Loading)
+        try {
+            emit(repo.getActiveAcc())
+        } catch (e: Exception) {
+            emit(Resource.Failure(e))
+        }
+    }
     private var type = MutableLiveData<String?>()
     private var movieOrTVShow = MutableLiveData<String?>()
     fun setType(typePass: String?) {
@@ -81,7 +87,7 @@ class HomeViewModel @Inject constructor(private val repo: Repo) : ViewModel() {
                         "Tv Top Rated" -> emit(repo.getTvShowTopRated())
                         else -> emit(repo.getSearchMulti(type!!, movieOrTVShow.value!!))
                     }
-                }else{
+                } else {
                     when (type) {
                         "Upcoming" -> emit(repo.getUpcomingMovies())
                         "Popular" -> emit(repo.getMoviesPopular())
@@ -89,11 +95,9 @@ class HomeViewModel @Inject constructor(private val repo: Repo) : ViewModel() {
                         else -> emit(repo.getSearchMulti(type!!, movieOrTVShow.value!!))
                     }
                 }
-
             } catch (e: Exception) {
                 emit(Resource.Failure(e))
             }
         }
     }
-
 }

@@ -22,4 +22,5 @@ interface DatasourceLocal {
     suspend fun getTvShowTopRated(): Resource<List<resultsDB>>
     suspend fun getDetailsOfMovie(id: Int, title: String): Resource<normalDetailsOfMovie>
     suspend fun getMovieInformationById(id: Int): resultsDB
+    suspend fun getActiveAccountsFromDatabase(): Resource<Accounts>
 }

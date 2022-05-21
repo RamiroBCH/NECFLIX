@@ -62,7 +62,7 @@ class DetailsAdapterMovies(
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .fitCenter()
                 .into(posterimg)
-            idposter.text = item.id.toString()
+            idposter.text = ""
             itemView.setOnClickListener { clickListener.onPosterClickListener(item, position) }
         }
 

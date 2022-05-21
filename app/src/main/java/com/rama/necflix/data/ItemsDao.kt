@@ -19,6 +19,9 @@ interface ItemsDao {
     @Query("SELECT * FROM INVITADO WHERE id == :id")
     suspend fun getAccountInvitado(id: Int): AccountInvitado?
 
+    @Query("SELECT * FROM ACCOUNTS WHERE isActive == :isActive")
+    suspend fun getActiveAcc(isActive: Boolean): Accounts
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertGenre(genre: GenresDB)
 
@@ -56,6 +59,6 @@ interface ItemsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMoviesDetailsDB(moviesDetailsDB: MoviesDetailsDB)
-    @Query("SELECT * FROM DETALLES WHERE id == :id")
-    suspend fun getMoviesDetailsDB(id: Int): MoviesDetailsDB
+    @Query("SELECT * FROM DETALLES WHERE title == :title")
+    suspend fun getMoviesDetailsDB(title: String): MoviesDetailsDB
 }

@@ -15,7 +15,6 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.rama.necflix.R
 import com.rama.necflix.data.GenresDB
 import com.rama.necflix.data.resultsDB
 import com.rama.necflix.databinding.FragmentHomeBinding
@@ -52,27 +51,22 @@ class HomeFragment : Fragment(), MoviesAdapter.OnClickListener {
         //obtener el id de sesion de invitado
         val guestSessionId: String = args.sessionId
         //probar si se inicio sesion
-        if (primaryKey == "no" || guestSessionId == "no") {
-            findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
-        }
+        getActiveAccount()
+        homeViewModel.setType("Upcoming")
 //SEARCH SETUP***************************************************************************
         setupSearch()
-//***************************************************************************************
 //BUTTON MODE SETUP**********************************************************************
         binding.btnModo.setOnClickListener {
-            Toast.makeText(context, "Modo oscuro", Toast.LENGTH_SHORT)
+            Toast.makeText(context, "Modo oscuro", Toast.LENGTH_SHORT).show()
         }
-//***************************************************************************************
 //RECYCLERVIEW NOWPLAYING****************************************************************
         //obtener los datos nowplaying
         setPlayingRecyclerView()
         getDataNowPlaying()
-//***************************************************************************************
 //RECYCLERVIEW MOVIES AND TV SHOWS*******************************************************
         //obtener los datos movies tv shows
         setMoviesTvShowsRecyclerView()
         getMoviesFromDB()
-//***************************************************************************************
 //EXPANDABLELISTVIEW GENRE***************************************************************
         //obtener listas de generos
         getGenreApi()
@@ -108,13 +102,32 @@ class HomeFragment : Fragment(), MoviesAdapter.OnClickListener {
             Log.d("tag", "onCreate: $it $lastIndex")
             lastIndex = it
         }
-//***************************************************************************************
-//EXPANDABLELISTVIEW TYPE****************************************************************
-        homeViewModel.setType("Upcoming")
-//***************************************************************************************
-
     }
 
+    private fun getActiveAccount() {
+        return homeViewModel.getActiveAcc.observe(viewLifecycleOwner, Observer {account ->
+            when (account) {
+                is Resource.Loading -> {
+                    Toast.makeText(context, "Obteniendo cuenta activa", Toast.LENGTH_SHORT).show()
+                }
+                is Resource.Success -> {
+                    val account = account.data
+                    if (account.isActive){
+                        Toast.makeText(context,
+                            " Bienvenido ${account.username} !!!", Toast.LENGTH_SHORT).show()
+                        binding.nameApp.text = account.username
+                    }else{
+                        Toast.makeText(context,
+                            "no se inicio sesion", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                is Resource.Failure -> {
+                    Toast.makeText(context, "Error ${account.exception}", Toast.LENGTH_LONG)
+                        .show()
+                }
+            }
+        })
+    }
 
     private fun setupSearch() {
         binding.search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -122,11 +135,9 @@ class HomeFragment : Fragment(), MoviesAdapter.OnClickListener {
                 homeViewModel.setType((p0!!).toString())
                 return false
             }
-
             override fun onQueryTextChange(p0: String?): Boolean {
                 return false
             }
-
         })
     }
 
@@ -156,9 +167,7 @@ class HomeFragment : Fragment(), MoviesAdapter.OnClickListener {
         return homeViewModel.getNowPlaying.observe(viewLifecycleOwner, Observer { list ->
             when (list) {
                 is Resource.Loading -> {
-                    Toast.makeText(
-                        context, "Cargando", Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(context, "Cargando", Toast.LENGTH_SHORT).show()
                 }
                 is Resource.Success -> {
                     countListNowPlaying = list.data.size
@@ -179,9 +188,7 @@ class HomeFragment : Fragment(), MoviesAdapter.OnClickListener {
         return homeViewModel.getMoviesFromDB.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Resource.Loading -> {
-                    Toast.makeText(
-                        context, "Cargando", Toast.LENGTH_SHORT
-                    ).show()
+                    //Toast.makeText(context, "Cargando", Toast.LENGTH_SHORT).show()
                 }
                 is Resource.Success -> {
                     //pasar los datos al adapter
@@ -189,8 +196,8 @@ class HomeFragment : Fragment(), MoviesAdapter.OnClickListener {
                         MoviesAdapter(requireContext(), result.data, this, "movies")
                 }
                 is Resource.Failure -> {
-                    Toast.makeText(requireContext(), "Error ${result.exception}", Toast.LENGTH_LONG)
-                        .show()
+                    Toast.makeText(requireContext(),
+                        "Error ${result.exception}", Toast.LENGTH_LONG).show()
                 }
             }
         })
@@ -206,28 +213,15 @@ class HomeFragment : Fragment(), MoviesAdapter.OnClickListener {
         return homeViewModel.getGenre.observe(viewLifecycleOwner, Observer { generos ->
             when (generos) {
                 is Resource.Loading -> {
-                    Toast.makeText(
-                        context, "Cargando", Toast.LENGTH_SHORT
-                    ).show()
+                    //Toast.makeText(context, "Cargando", Toast.LENGTH_SHORT).show()
                 }
                 is Resource.Success -> {
                     genresDB = generos.data
-                    Toast.makeText(
-                        context, "Datos Cargados", Toast.LENGTH_SHORT
-                    ).show()
-                    /*for(i in genresDB.indices){
-                        Toast.makeText(context, generos.data[i].name, Toast.LENGTH_SHORT).show()
-                    }*/
                     //configurar los objetos map y words con los datos obtenidos
                     setData(genresDB)
                 }
                 is Resource.Failure -> {
-                    Toast.makeText(
-                        requireContext(),
-                        "Error ${generos.exception}",
-                        Toast.LENGTH_LONG
-                    )
-                        .show()
+                    Toast.makeText(context, "Error ${generos.exception}", Toast.LENGTH_LONG).show()
                 }
             }
         })

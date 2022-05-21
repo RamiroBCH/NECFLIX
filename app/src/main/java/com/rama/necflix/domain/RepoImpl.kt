@@ -17,6 +17,11 @@ class RepoImpl @Inject constructor(
         datasourceNetwork.updateAiringTodayTvShow()
         datasourceNetwork.updateTvShowPopular()
         datasourceNetwork.updateTvShowTopRated()
+        datasourceNetwork.updateGenre()
+    }
+
+    override suspend fun getActiveAcc(): Resource<Accounts> {
+        return datasourceLocal.getActiveAccountsFromDatabase()
     }
 
     override suspend fun insertAccountToRoom(account: Accounts) {
@@ -64,8 +69,12 @@ class RepoImpl @Inject constructor(
     }
 
     override suspend fun getSearchMulti(search: String, mode: String): Resource<List<resultsDB>> {
-        datasourceNetwork.updateSearchMulti(search, mode)
-        return datasourceLocal.getSearchMulti(search, mode)
+        return try {
+            datasourceNetwork.updateSearchMulti(search, mode)
+            datasourceLocal.getSearchMulti(search, mode)
+        }catch (e: Exception){
+            datasourceLocal.getSearchMulti(search, mode)
+        }
     }
 
     override suspend fun getAiringTodayTvShow(): Resource<List<resultsDB>> {
@@ -77,13 +86,16 @@ class RepoImpl @Inject constructor(
     }
 
     override suspend fun getTvShowTopRated(): Resource<List<resultsDB>> {
-
         return datasourceLocal.getTvShowTopRated()
     }
 
     override suspend fun getDetailsOfMovie(id: Int, title: String): Resource<normalDetailsOfMovie> {
-        datasourceNetwork.updateDetailsOfMovie(id)
-        return datasourceLocal.getDetailsOfMovie(id, title)
+        return try {
+            datasourceNetwork.updateDetailsOfMovie(id)
+            datasourceLocal.getDetailsOfMovie(id, title)
+        }catch (e: Exception){
+            datasourceLocal.getDetailsOfMovie(id, title)
+        }
     }
 
     override suspend fun getMovieInformationById(id: Int): resultsDB {

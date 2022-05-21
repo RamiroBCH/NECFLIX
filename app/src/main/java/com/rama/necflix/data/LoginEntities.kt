@@ -16,7 +16,9 @@ data class Accounts(
     @ColumnInfo
     val sessionId:String?,
     @ColumnInfo
-    val imgSrc: String
+    val imgSrc: String,
+    @ColumnInfo
+    val isActive: Boolean
 )
 
 @Entity(tableName = "INVITADO")
@@ -102,23 +104,21 @@ data class GenresDBMovieSelected(
 )
 @Entity(tableName = "VIDEOS")
 data class VideosDBMovieSelected(
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     @ColumnInfo
-    val id: Int?,
+    val url:String,
     @ColumnInfo
-    val name: String,
-    @ColumnInfo
-    val url:String
+    val name: String
+
 )
 @Entity(tableName = "POSTER")
 data class PosterDBMovieSelected(
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     @ColumnInfo
-    val id: Int?,
+    val url:String,
     @ColumnInfo
-    val name:String,
-    @ColumnInfo
-    val url:String
+    val name:String
+
 )
 @Entity(tableName = "DETALLES")
 data class MoviesDetailsDB(

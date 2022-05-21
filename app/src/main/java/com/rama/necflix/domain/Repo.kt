@@ -23,4 +23,5 @@ interface Repo {
     suspend fun getDetailsOfMovie(id: Int, title: String): Resource<normalDetailsOfMovie>
     suspend fun getMovieInformationById(id: Int): resultsDB
     suspend fun updateAll()
+    suspend fun getActiveAcc(): Resource<Accounts>
 }

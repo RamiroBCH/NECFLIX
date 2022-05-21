@@ -3,39 +3,34 @@ package com.rama.necflix.data
 import com.rama.necflix.domain.Webservice
 import com.rama.necflix.network.DatasourceNetwork
 import com.rama.necflix.utils.*
+import com.rama.necflix.vo.*
 import javax.inject.Inject
 
 class DatasourceNetworkImpl @Inject constructor(private val itemsDao: ItemsDao, private val webservice: Webservice):
     DatasourceNetwork {
-    private val apikey = "f937e50a9ebe2079954b39dfed897360"
-    private val language = "es"
-    private val append = "videos,images"
 
     override suspend fun updateNowPlaying() {
-        val type = "nowplaying"
         val nowPlayingList = webservice.getNowPlaying(apikey, language).results
-        val convert = mapConvert(nowPlayingList,type)
+        val convert = mapConvert(nowPlayingList, nowplaying)
         insertDB(convert)
     }
 
     override suspend fun updateUpcomingMovies() {
-        val type = "Upcoming"
+
         val upcomingMoviesList = webservice.getUpcomingMovies(apikey, language).results
-        val convert = mapConvert(upcomingMoviesList,type)
+        val convert = mapConvert(upcomingMoviesList, Upcoming)
         insertDB(convert)
     }
 
     override suspend fun updateMoviesPopular() {
-        val type = "Popular"
         val moviesPopularList = webservice.getMoviesPopular(apikey, language).results
-        val listConvert = mapConvert(moviesPopularList,type)
+        val listConvert = mapConvert(moviesPopularList, Popular)
         insertDB(listConvert)
     }
 
     override suspend fun updateMoviesTopRated() {
-        val type = "Top Rated"
         val moviesTopRatedList = webservice.getTopRated(apikey, language).results
-        val listConvert = mapConvert(moviesTopRatedList, type)
+        val listConvert = mapConvert(moviesTopRatedList, TopRated)
         insertDB(listConvert)
     }
 
@@ -83,11 +78,18 @@ class DatasourceNetworkImpl @Inject constructor(private val itemsDao: ItemsDao, 
         }
         if(details.videos != null){
             videosUrl = mapVideos(details.title, details.videos.results)
-            insertDetailsMovie(videosUrl)
+            insertDetailsVideos(videosUrl)
         }
         val detailsOfRest = convertDetails(details)
         insertDetailsGenres(generos)
         insertMoviesDetailsDB(detailsOfRest)
+    }
+
+    override suspend fun updateGenre() {
+        val list = webservice.getGenre(apikey)
+        for (i in list.genres.indices) {
+            itemsDao.insertGenre(GenresDB(list.genres[i].id, list.genres[i].name))
+        }
     }
 
     //******************************************************************************************
@@ -147,20 +149,19 @@ class DatasourceNetworkImpl @Inject constructor(private val itemsDao: ItemsDao, 
         for (i in list.indices){
             itemsDao.insertDetailsPoster(
                 PosterDBMovieSelected(
-                    list[i].id,
-                    list[i].name,
-                    list[i].url
+                    list[i].url,
+                    list[i].name
+
                 )
             )
         }
     }
-    private suspend fun insertDetailsMovie(list: List<VideosDBMovieSelected>){
+    private suspend fun insertDetailsVideos(list: List<VideosDBMovieSelected>){
         for(i in list.indices){
             itemsDao.insertDetailsVideos(
                 VideosDBMovieSelected(
-                    list[i].id,
-                    list[i].name,
-                    list[i].url
+                    list[i].url,
+                    list[i].name
                 )
             )
         }

@@ -6,6 +6,7 @@
     <string name="menu_home">Home</string>
     <string name="discover_fragment">Discover</string>
     <string name="details_fragment">Detalles</string>
+    <string name="about">About</string>
     <!-- Strings related to login -->
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -17,8 +18,9 @@
     <string name="esta_suscrito_en_necflix">¿Esta suscrito en Necflix?</string>
     <string name="entrar_como_invitado">Entrar como invitado.</string>
     <string name="cuentas">Cuentas</string>
-    <string name="zczccasac">zczccasac</string>
     <string name="username">username</string>
     <string name="password">password</string>
     <string name="modooscuro">ModoOscuro</string>
+    <string name="series_favoritas">Series Favoritas</string>
+    <string name="pelis_favoritas">Pelis Favoritas</string>
 </resources>

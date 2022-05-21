@@ -86,18 +86,18 @@ fun mapGenres(generes: List<GenreX>): List<GenresDBMovieSelected>{
 fun mapImagesPoster(title: String, pster: List<Poster>): List<PosterDBMovieSelected>{
     return pster.map {
         PosterDBMovieSelected(
-            null,
-            title,
-            it.file_path
+            it.file_path,
+            title
+
         )
     }
 }
 fun mapVideos(title: String, vids: List<ResultDetails>): List<VideosDBMovieSelected>{
     return vids.map {
         VideosDBMovieSelected(
-            null,
+            it.key,
             title,
-            it.key
+
         )
     }
 }

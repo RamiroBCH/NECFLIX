@@ -3,14 +3,11 @@ package com.rama.necflix.data
 import com.rama.necflix.domain.DatasourceLocal
 import com.rama.necflix.domain.Webservice
 import com.rama.necflix.utils.*
-import com.rama.necflix.vo.Resource
+import com.rama.necflix.vo.*
 import javax.inject.Inject
 
 class DatasourceLocalImpl @Inject constructor(private val itemsDao: ItemsDao, private val webservice: Webservice) :
     DatasourceLocal {
-    private val apikey = "f937e50a9ebe2079954b39dfed897360"
-    private val language = "es"
-    private val append = "videos,images"
 
     override suspend fun insertAccountToRoom(account: Accounts) {
         itemsDao.insertAccount(account)
@@ -45,35 +42,27 @@ class DatasourceLocalImpl @Inject constructor(private val itemsDao: ItemsDao, pr
     }
 
     override suspend fun getGenre(): Resource<List<GenresDB>> {
-        val list = webservice.getGenre(apikey)
-        for (i in list.genres.indices) {
-            itemsDao.insertGenre(GenresDB(list.genres[i].id, list.genres[i].name))
-        }
         val listDB = itemsDao.getGenre()
         return Resource.Success(listDB)
     }
 
     override suspend fun getNowPlaying(): Resource<List<resultsDB>> {
-        val type = "nowplaying"
-        val nowPlayingListDB = itemsDao.getMoviesFromDB(type)
+        val nowPlayingListDB = itemsDao.getMoviesFromDB(nowplaying)
         return Resource.Success(nowPlayingListDB)
     }
 
     override suspend fun getUpcomingMovies(): Resource<List<resultsDB>> {
-        val type = "Upcoming"
-        val upcomingMoviesListDB = itemsDao.getMoviesFromDB(type)
+        val upcomingMoviesListDB = itemsDao.getMoviesFromDB(Upcoming)
         return Resource.Success(upcomingMoviesListDB)
     }
 
     override suspend fun getMoviesPopular(): Resource<List<resultsDB>> {
-        val type = "Popular"
-        val moviesPopularListDB = itemsDao.getMoviesFromDB(type)
+        val moviesPopularListDB = itemsDao.getMoviesFromDB(Popular)
         return Resource.Success(moviesPopularListDB)
     }
 
     override suspend fun getMoviesTopRated(): Resource<List<resultsDB>> {
-        val type = "Top Rated"
-        val moviesTopRatedListDB = itemsDao.getMoviesFromDB(type)
+        val moviesTopRatedListDB = itemsDao.getMoviesFromDB(TopRated)
         return Resource.Success(moviesTopRatedListDB)
     }
 
@@ -88,20 +77,17 @@ class DatasourceLocalImpl @Inject constructor(private val itemsDao: ItemsDao, pr
     }
 
     override suspend fun getAiringTodayTvShow(): Resource<List<resultsDB>> {
-        val type = "AiringToday"
-        val tvShowsAiringTodayDB = itemsDao.getTvShowsFromDB(type)
+        val tvShowsAiringTodayDB = itemsDao.getTvShowsFromDB(AiringToday)
         return Resource.Success(asNormalResultDB(tvShowsAiringTodayDB))
     }
 
     override suspend fun getTvShowPopular(): Resource<List<resultsDB>> {
-        val type = "Tv Popular"
-        val tvShowsPopularDB = itemsDao.getTvShowsFromDB(type)
+        val tvShowsPopularDB = itemsDao.getTvShowsFromDB(TvPopular)
         return Resource.Success(asNormalResultDB(tvShowsPopularDB))
     }
 
     override suspend fun getTvShowTopRated(): Resource<List<resultsDB>> {
-        val type = "Tv Top Rated"
-        val tvShowsTopRatedDB = itemsDao.getTvShowsFromDB(type)
+        val tvShowsTopRatedDB = itemsDao.getTvShowsFromDB(TvTopRated)
         return Resource.Success(asNormalResultDB(tvShowsTopRatedDB))
     }
 
@@ -109,13 +95,17 @@ class DatasourceLocalImpl @Inject constructor(private val itemsDao: ItemsDao, pr
         val genero = itemsDao.getDetailsGenres(id)
         val posterUr = itemsDao.getDetailsPoster(title)
         val videosUr = itemsDao.getDetailsVideos(title)
-        val detailsOfRes = itemsDao.getMoviesDetailsDB(id)
+        val detailsOfRes = itemsDao.getMoviesDetailsDB(title)
         val detailsComplete = convertComplete(detailsOfRes, genero, posterUr, videosUr)
         return Resource.Success(detailsComplete)
     }
 
     override suspend fun getMovieInformationById(id: Int): resultsDB {
         return itemsDao.getMovieInformationById(id)
+    }
+
+    override suspend fun getActiveAccountsFromDatabase(): Resource<Accounts> {
+        return Resource.Success(itemsDao.getActiveAcc(true))
     }
 
 }
