@@ -7,7 +7,7 @@ import com.rama.necflix.vo.Resource
 interface DatasourceLocal {
     suspend fun insertAccountToRoom(account: Accounts)
     suspend fun getAccountsFromDatabase(): Resource<List<Accounts>>
-    suspend fun getGuestSessionId(): Resource<String>
+    suspend fun getGuestSessionId(): Resource<AccountInvitado>
     suspend fun getTokenNew(): Resource<String>
     suspend fun createTokenActivated(getToken: Token): Resource<String>
     suspend fun createSessionId(tokenValidate: String): Resource<String>
@@ -23,4 +23,5 @@ interface DatasourceLocal {
     suspend fun getDetailsOfMovie(id: Int, title: String): Resource<normalDetailsOfMovie>
     suspend fun getMovieInformationById(id: Int): resultsDB
     suspend fun getActiveAccountsFromDatabase(): Resource<Accounts>
+    //suspend fun updateAccounts()
 }

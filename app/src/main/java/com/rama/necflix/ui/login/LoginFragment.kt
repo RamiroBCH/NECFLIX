@@ -69,18 +69,18 @@ class LoginFragment : Fragment(), AccountsImagesAdapter.OnPhotoClickListener {
             when(result){
                 is Resource.Loading -> {
                     Toast.makeText(
-                        context, "Cargando", Toast.LENGTH_SHORT).show()
+                        context, "Accediendo como invitado", Toast.LENGTH_SHORT).show()
                 }
                 is Resource.Success -> {
-                    sessionId = result.data
+                    sessionId = result.data.id.toString()
                     Toast.makeText(
-                        context, "Sesion de invitado creada", Toast.LENGTH_SHORT).show()
+                        context, "Completado", Toast.LENGTH_SHORT).show()
                     Toast.makeText(
                         context, sessionId, Toast.LENGTH_SHORT).show()
                     //navega home como invitado
                     findNavController()
                         .navigate(LoginFragmentDirections
-                            .actionLoginFragmentToHomeFragment("0",sessionId))
+                            .actionLoginFragmentToHomeFragment("no",sessionId))
                 }
                 is Resource.Failure -> {
                     Toast.makeText(context,
@@ -123,7 +123,7 @@ class LoginFragment : Fragment(), AccountsImagesAdapter.OnPhotoClickListener {
             val primaryKey = chooseAccount?.sessionId
             findNavController()
                 .navigate(LoginFragmentDirections
-                .actionLoginFragmentToHomeFragment(primaryKey!!,"0"))
+                .actionLoginFragmentToHomeFragment(primaryKey!!,"no"))
         }else{
             Toast.makeText(context,"Contraseña incorrecta",Toast.LENGTH_LONG).show()
         }

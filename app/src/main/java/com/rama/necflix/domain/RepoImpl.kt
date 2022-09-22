@@ -24,6 +24,10 @@ class RepoImpl @Inject constructor(
         return datasourceLocal.getActiveAccountsFromDatabase()
     }
 
+    /*override suspend fun updateAccounts() {
+        datasourceLocal.updateAccounts()
+    }*/
+
     override suspend fun insertAccountToRoom(account: Accounts) {
         datasourceLocal.insertAccountToRoom(account)
     }
@@ -32,7 +36,7 @@ class RepoImpl @Inject constructor(
         return datasourceLocal.getAccountsFromDatabase()
     }
 
-    override suspend fun getGuestSessionId(): Resource<String> {
+    override suspend fun getGuestSessionId(): Resource<AccountInvitado> {
         return datasourceLocal.getGuestSessionId()
     }
 

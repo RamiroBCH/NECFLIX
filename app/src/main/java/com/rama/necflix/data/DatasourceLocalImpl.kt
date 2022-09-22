@@ -17,15 +17,15 @@ class DatasourceLocalImpl @Inject constructor(private val itemsDao: ItemsDao, pr
         return Resource.Success(itemsDao.getAccountsFromDatabase())
     }
 
-    override suspend fun getGuestSessionId(): Resource<String> {
+    override suspend fun getGuestSessionId(): Resource<AccountInvitado> {
         var token: AccountInvitado? = itemsDao.getAccountInvitado(0)
         return if (token == null) {
             val sessionId: String = webservice.getGuestSessionId(apikey).guest_session_id
-            itemsDao.insertAccountInvitado(AccountInvitado(0, sessionId))
+            itemsDao.insertAccountInvitado(AccountInvitado(0, invitado, sessionId))
             token = itemsDao.getAccountInvitado(0)!!
-            Resource.Success(token.token)
+            Resource.Success(token)
         } else {
-            Resource.Success(token.token)
+            Resource.Success(token)
         }
     }
 
@@ -107,6 +107,10 @@ class DatasourceLocalImpl @Inject constructor(private val itemsDao: ItemsDao, pr
     override suspend fun getActiveAccountsFromDatabase(): Resource<Accounts> {
         return Resource.Success(itemsDao.getActiveAcc(true))
     }
+
+    /*override suspend fun updateAccounts() {
+        itemsDao.
+    }*/
 
 }
 

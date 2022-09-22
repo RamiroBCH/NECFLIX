@@ -162,7 +162,7 @@ class CreateAccountFragment : Fragment(), CreateAccountAdapter.OnDrawableClickLi
         val primaryKey = account.username
         findNavController().navigate(
             CreateAccountFragmentDirections
-                .actionCreateAccountFragmentToHomeFragment(primaryKey,"0")
+                .actionCreateAccountFragmentToHomeFragment(primaryKey,"no")
         )
     }
 

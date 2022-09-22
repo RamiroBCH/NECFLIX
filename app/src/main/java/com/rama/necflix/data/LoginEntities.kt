@@ -26,6 +26,8 @@ data class AccountInvitado(
     @PrimaryKey
     val id: Int,
     @ColumnInfo
+    val name: String,
+    @ColumnInfo
     val token: String
 )
 
