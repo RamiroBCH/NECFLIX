@@ -72,7 +72,7 @@ class LoginFragment : Fragment(), AccountsImagesAdapter.OnPhotoClickListener {
                         context, "Accediendo como invitado", Toast.LENGTH_SHORT).show()
                 }
                 is Resource.Success -> {
-                    sessionId = result.data.id.toString()
+                    sessionId = "0"
                     Toast.makeText(
                         context, "Completado", Toast.LENGTH_SHORT).show()
                     Toast.makeText(
